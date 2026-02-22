@@ -1,0 +1,439 @@
+<!doctype html>
+<html lang="th">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Markdown Editor</title>
+
+    <!-- Tailwind CSS พร้อมปลั๊กอิน Typography สำหรับจัดฟอร์แมต Markdown ให้อ่านง่าย -->
+    <script src="https://cdn.tailwindcss.com?plugins=typography"></script>
+
+    <!-- Marked.js สำหรับแปลง Markdown เป็น HTML -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+
+    <!-- Lucide Icons สำหรับไอคอนสวยๆ -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <!-- ฟอนต์ Sarabun -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Sarabun:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800&display=swap"
+      rel="stylesheet"
+    />
+
+    <link
+      rel="icon"
+      type="image/png"
+      href="./favicon/favicon-96x96.png"
+      sizes="96x96"
+    />
+    <link rel="icon" type="image/svg+xml" href="./favicon/favicon.svg" />
+    <link rel="shortcut icon" href="./favicon/favicon.ico" />
+    <link
+      rel="apple-touch-icon"
+      sizes="180x180"
+      href="./favicon/apple-touch-icon.png"
+    />
+    <meta name="apple-mobile-web-app-title" content="MyWebSite" />
+    <link rel="manifest" href="./favicon/site.webmanifest" />
+
+    <style>
+      body {
+        font-family: "Sarabun", sans-serif;
+      }
+
+      /* ตกแต่ง Scrollbar ให้ดูสะอาดตา (Clean UI) */
+      ::-webkit-scrollbar {
+        width: 8px;
+        height: 8px;
+      }
+      ::-webkit-scrollbar-track {
+        background: transparent;
+      }
+      ::-webkit-scrollbar-thumb {
+        background: #cbd5e1;
+        border-radius: 4px;
+      }
+      ::-webkit-scrollbar-thumb:hover {
+        background: #94a3b8;
+      }
+    </style>
+  </head>
+  <body
+    class="bg-slate-50 h-screen flex flex-col text-slate-800 overflow-hidden"
+  >
+    <!-- ส่วน Header -->
+    <header
+      class="bg-white border-b border-slate-200 px-6 py-4 flex justify-between items-center shadow-sm z-10 shrink-0"
+    >
+      <div class="flex items-center gap-3">
+        <div class="p-2 bg-blue-50 text-blue-600 rounded-lg">
+          <i data-lucide="layout-template" class="w-5 h-5"></i>
+        </div>
+        <h1 class="text-lg font-bold text-slate-900 tracking-tight">
+          Markdown Editor
+          <span class="text-slate-400 font-normal ml-1">| apirak.com</span>
+        </h1>
+      </div>
+      <div class="flex items-center gap-3">
+        <!-- ปุ่ม Copy เผื่ออยากก๊อป Markdown ไปวางที่อื่นเร็วๆ -->
+        <button
+          onclick="toggleCheatSheet()"
+          class="flex items-center gap-2 px-4 py-2 text-sm font-medium text-slate-600 bg-slate-100 hover:bg-slate-200 rounded-md transition-colors duration-200"
+        >
+          <i data-lucide="book-open" class="w-4 h-4"></i> คู่มือ Markdown
+        </button>
+        <button
+          onclick="resetToDefault()"
+          class="flex items-center gap-2 px-4 py-2 text-sm font-medium text-slate-600 bg-slate-100 hover:bg-slate-200 rounded-md transition-colors duration-200"
+        >
+          <i data-lucide="rotate-ccw" class="w-4 h-4"></i> รีเซ็ต
+        </button>
+        <button
+          onclick="copyMarkdown()"
+          id="copyBtn"
+          class="flex items-center gap-2 px-4 py-2 text-sm font-medium text-slate-600 bg-slate-100 hover:bg-slate-200 rounded-md transition-colors duration-200"
+        >
+          <i data-lucide="copy" class="w-4 h-4"></i> คัดลอก Markdown
+        </button>
+      </div>
+    </header>
+
+    <!-- ส่วนเนื้อหาหลัก แบ่งครึ่งซ้าย-ขวา -->
+    <main class="flex-1 flex flex-col md:flex-row overflow-hidden">
+      <!-- ซ้าย: Editor Area -->
+      <section
+        class="w-full md:w-1/2 flex flex-col border-b md:border-b-0 md:border-r border-slate-200 bg-white"
+      >
+        <div
+          class="bg-slate-50 px-4 py-3 flex items-center gap-2 border-b border-slate-200 text-sm font-semibold text-slate-600 shrink-0"
+        >
+          <i data-lucide="terminal" class="w-4 h-4"></i> Markdown Editor
+        </div>
+        <!-- Textarea ให้พิมพ์งาน -->
+        <textarea
+          id="editor"
+          class="flex-1 w-full p-6 resize-none focus:outline-none focus:ring-2 focus:ring-inset focus:ring-blue-500/50 font-mono text-sm leading-relaxed text-slate-700 bg-white"
+        ></textarea>
+      </section>
+
+      <!-- ขวา: Live Preview Area -->
+      <section class="w-full md:w-1/2 flex flex-col bg-white">
+        <div
+          class="bg-slate-50 px-4 py-3 flex items-center gap-2 border-b border-slate-200 text-sm font-semibold text-slate-600 shrink-0"
+        >
+          <i data-lucide="eye" class="w-4 h-4 text-blue-500"></i> Live Preview
+        </div>
+        <!-- พื้นที่แสดงผล ใช้คลาส prose ของ Tailwind เพื่อให้ฟอร์แมตออกมาสวยเป๊ะ -->
+        <div
+          id="preview"
+          class="flex-1 w-full p-8 overflow-y-auto prose prose-slate prose-blue max-w-none"
+        >
+          <!-- HTML จะถูกนำมาใส่ตรงนี้อัตโนมัติ -->
+        </div>
+      </section>
+    </main>
+
+    <!-- Modal คู่มือ Markdown -->
+    <div id="cheatSheetModal" class="fixed inset-0 z-50 hidden">
+      <!-- Backdrop -->
+      <div
+        class="absolute inset-0 bg-black/50 backdrop-blur-sm"
+        onclick="toggleCheatSheet()"
+      ></div>
+      <!-- Modal Content -->
+      <div
+        class="relative mx-auto mt-10 mb-10 w-[90vw] max-w-6xl bg-white rounded-2xl shadow-2xl flex flex-col max-h-[85vh] overflow-hidden"
+      >
+        <!-- Modal Header -->
+        <div
+          class="flex items-center justify-between px-6 py-4 border-b border-slate-200 shrink-0"
+        >
+          <div class="flex items-center gap-2">
+            <i data-lucide="book-open" class="w-5 h-5 text-blue-600"></i>
+            <h2 class="text-lg font-bold text-slate-900">
+              คู่มือการเขียน Markdown
+            </h2>
+          </div>
+          <button
+            onclick="toggleCheatSheet()"
+            class="p-2 hover:bg-slate-100 rounded-lg transition-colors"
+          >
+            <i data-lucide="x" class="w-5 h-5 text-slate-500"></i>
+          </button>
+        </div>
+        <!-- Modal Body: 3 Columns -->
+        <div
+          class="flex-1 overflow-y-auto p-6 grid grid-cols-1 md:grid-cols-3 gap-6 text-sm text-slate-700"
+        >
+          <!-- Column 1: พื้นฐาน -->
+          <div class="space-y-5">
+            <div>
+              <h3 class="font-bold text-slate-900 mb-3 flex items-center gap-2">
+                <i data-lucide="type" class="w-4 h-4 text-blue-500"></i> หัวข้อ
+                (Headings)
+              </h3>
+              <div
+                class="bg-slate-50 rounded-lg p-3 font-mono text-xs space-y-1"
+              >
+                <div># หัวข้อระดับ 1</div>
+                <div>## หัวข้อระดับ 2</div>
+                <div>### หัวข้อระดับ 3</div>
+                <div>#### หัวข้อระดับ 4</div>
+                <div>##### หัวข้อระดับ 5</div>
+                <div>###### หัวข้อระดับ 6</div>
+              </div>
+            </div>
+            <div>
+              <h3 class="font-bold text-slate-900 mb-3 flex items-center gap-2">
+                <i data-lucide="bold" class="w-4 h-4 text-blue-500"></i>
+                จัดรูปแบบตัวอักษร
+              </h3>
+              <div
+                class="bg-slate-50 rounded-lg p-3 font-mono text-xs space-y-1"
+              >
+                <div>**ตัวหนา**</div>
+                <div>*ตัวเอียง*</div>
+                <div>~~ขีดฆ่า~~</div>
+                <div>**_หนาและเอียง_**</div>
+                <div>`โค้ดแบบ inline`</div>
+              </div>
+            </div>
+            <div>
+              <h3 class="font-bold text-slate-900 mb-3 flex items-center gap-2">
+                <i data-lucide="minus" class="w-4 h-4 text-blue-500"></i>
+                เส้นคั่น
+              </h3>
+              <div
+                class="bg-slate-50 rounded-lg p-3 font-mono text-xs space-y-1"
+              >
+                <div>---</div>
+                <div>***</div>
+                <div>___</div>
+              </div>
+            </div>
+            <div>
+              <h3 class="font-bold text-slate-900 mb-3 flex items-center gap-2">
+                <i data-lucide="quote" class="w-4 h-4 text-blue-500"></i>
+                Blockquote
+              </h3>
+              <div
+                class="bg-slate-50 rounded-lg p-3 font-mono text-xs space-y-1"
+              >
+                <div>> ข้อความอ้างอิง</div>
+                <div>>> อ้างอิงซ้อน</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Column 2: รายการและลิงก์ -->
+          <div class="space-y-5">
+            <div>
+              <h3 class="font-bold text-slate-900 mb-3 flex items-center gap-2">
+                <i data-lucide="list" class="w-4 h-4 text-blue-500"></i> รายการ
+                (Lists)
+              </h3>
+              <div
+                class="bg-slate-50 rounded-lg p-3 font-mono text-xs space-y-2"
+              >
+                <div class="text-slate-500">
+                  <!-- รายการแบบไม่เรียงลำดับ -->
+                </div>
+                <div>- รายการที่ 1</div>
+                <div>- รายการที่ 2</div>
+                <div>&nbsp;&nbsp;- รายการย่อย</div>
+                <div class="mt-2 text-slate-500">
+                  <!-- รายการแบบเรียงลำดับ -->
+                </div>
+                <div>1. ข้อแรก</div>
+                <div>2. ข้อสอง</div>
+                <div>3. ข้อสาม</div>
+              </div>
+            </div>
+            <div>
+              <h3 class="font-bold text-slate-900 mb-3 flex items-center gap-2">
+                <i data-lucide="check-square" class="w-4 h-4 text-blue-500"></i>
+                Checklist
+              </h3>
+              <div
+                class="bg-slate-50 rounded-lg p-3 font-mono text-xs space-y-1"
+              >
+                <div>- [x] งานที่เสร็จแล้ว</div>
+                <div>- [ ] งานที่ยังไม่เสร็จ</div>
+                <div>- [ ] งานที่ต้องทำ</div>
+              </div>
+            </div>
+            <div>
+              <h3 class="font-bold text-slate-900 mb-3 flex items-center gap-2">
+                <i data-lucide="link" class="w-4 h-4 text-blue-500"></i>
+                ลิงก์และรูปภาพ
+              </h3>
+              <div
+                class="bg-slate-50 rounded-lg p-3 font-mono text-xs space-y-1"
+              >
+                <div>[ข้อความ](https://url.com)</div>
+                <div>![alt text](image-url.jpg)</div>
+                <div>[ลิงก์อ้างอิง][1]</div>
+                <div class="mt-1">[1]: https://url.com</div>
+              </div>
+            </div>
+            <div>
+              <h3 class="font-bold text-slate-900 mb-3 flex items-center gap-2">
+                <i data-lucide="image" class="w-4 h-4 text-blue-500"></i>
+                รูปภาพพร้อมขนาด
+              </h3>
+              <div
+                class="bg-slate-50 rounded-lg p-3 font-mono text-xs space-y-1"
+              >
+                <div>![alt](url.jpg "title")</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Column 3: ตารางและโค้ด -->
+          <div class="space-y-5">
+            <div>
+              <h3 class="font-bold text-slate-900 mb-3 flex items-center gap-2">
+                <i data-lucide="table" class="w-4 h-4 text-blue-500"></i> ตาราง
+                (Table)
+              </h3>
+              <div
+                class="bg-slate-50 rounded-lg p-3 font-mono text-xs space-y-1"
+              >
+                <div>| หัวข้อ 1 | หัวข้อ 2 | หัวข้อ 3 |</div>
+                <div>| -------- | :------: | -------: |</div>
+                <div>| ซ้าย | กลาง | ขวา |</div>
+                <div>| ข้อมูล | ข้อมูล | ข้อมูล |</div>
+                <div class="mt-2 text-slate-400 text-[10px]">
+                  :-- ชิดซ้าย | :--: กลาง | --: ชิดขวา
+                </div>
+              </div>
+            </div>
+            <div>
+              <h3 class="font-bold text-slate-900 mb-3 flex items-center gap-2">
+                <i data-lucide="code" class="w-4 h-4 text-blue-500"></i> Code
+                Block
+              </h3>
+              <div
+                class="bg-slate-50 rounded-lg p-3 font-mono text-xs space-y-1"
+              >
+                <div>```javascript</div>
+                <div>const greeting = "Hello";</div>
+                <div>console.log(greeting);</div>
+                <div>```</div>
+              </div>
+            </div>
+            <div>
+              <h3 class="font-bold text-slate-900 mb-3 flex items-center gap-2">
+                <i data-lucide="foot-prints" class="w-4 h-4 text-blue-500"></i>
+                Footnote
+              </h3>
+              <div
+                class="bg-slate-50 rounded-lg p-3 font-mono text-xs space-y-1"
+              >
+                <div>ข้อความ[^1]</div>
+                <div class="mt-1">[^1]: เชิงอรรถ</div>
+              </div>
+            </div>
+            <div>
+              <h3 class="font-bold text-slate-900 mb-3 flex items-center gap-2">
+                <i data-lucide="zap" class="w-4 h-4 text-blue-500"></i> เคล็ดลับ
+              </h3>
+              <div class="bg-slate-50 rounded-lg p-3 text-xs space-y-2">
+                <div>• ขึ้นบรรทัดใหม่: เว้น 2 เคาะท้ายบรรทัด</div>
+                <div>• ย่อหน้าใหม่: เว้นบรรทัดว่าง 1 บรรทัด</div>
+                <div>
+                  • Escape สัญลักษณ์: ใส่ \ ข้างหน้า<br /><span
+                    class="font-mono"
+                    >\* \# \[ \] \( \)</span
+                  >
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // เรียกใช้ไอคอน
+      lucide.createIcons();
+
+      const editor = document.getElementById("editor");
+      const preview = document.getElementById("preview");
+      const copyBtn = document.getElementById("copyBtn");
+
+      // ข้อความ Default ตามที่คุณ Bank ต้องการ (ผมจัดรูปประโยคเป็น Markdown ให้ดูอ่านง่ายขึ้นนิดนึงครับ)
+      const defaultMarkdown = `ตอนนี้โปรเจกต์ 'Super App' มีปัญหาเรื่องงบครับ เดิมตั้งไว้ 1 ล้านบาท ตอนนี้ใช้ไปแล้ว 8 แสน เหลืออีกแค่ 2 แสน แต่ทีม Dev บอกว่าฟีเจอร์ที่ต้องทำยังมีอีก 3 อย่าง คือ ระบบจ่ายเงิน (สถานะ: กำลังทำ, ความยาก: สูง), ระบบสมาชิก (สถานะ: เสร็จแล้ว, ความยาก: ต่ำ), และระบบแต้มสะสม (สถานะ: ยังไม่ได้เริ่ม, ความยาก: กลาง) ทาง CTO กังวลว่าเงิน 2 แสนที่เหลือจะไม่พอจ่ายค่า Outsource ระบบจ่ายเงินที่ตั้งไว้ 1.5 แสน และค่า Server อีก 1 แสน พี่สมชายบอกว่าให้ช่วยสรุปให้ CEO ดูหน่อยว่ามีอะไรค้างบ้าง งบเหลือเท่าไหร่ และอันไหนเสี่ยงสุด`;
+
+      // ตั้งค่า Marked.js ให้รองรับการขึ้นบรรทัดใหม่แบบปกติ (เหมือนเวลาแชท)
+      marked.setOptions({
+        breaks: true,
+        gfm: true,
+      });
+
+      // ฟังก์ชันอัปเดต Preview สดๆ
+      function updatePreview() {
+        const markdownText = editor.value;
+        // แปลง Markdown เป็น HTML
+        const html = marked.parse(markdownText);
+        // โยนใส่ฝั่งขวา
+        preview.innerHTML = html;
+      }
+
+      // ฟังก์ชันเปิด/ปิด Modal คู่มือ Markdown
+      function toggleCheatSheet() {
+        const modal = document.getElementById("cheatSheetModal");
+        modal.classList.toggle("hidden");
+        // สร้างไอคอนใหม่ทุกครั้งที่เปิด Modal
+        if (!modal.classList.contains("hidden")) {
+          lucide.createIcons();
+        }
+      }
+
+      // ปิด Modal ด้วยปุ่ม Escape
+      document.addEventListener("keydown", (e) => {
+        if (e.key === "Escape") {
+          const modal = document.getElementById("cheatSheetModal");
+          if (!modal.classList.contains("hidden")) {
+            toggleCheatSheet();
+          }
+        }
+      });
+
+      // ฟังก์ชันรีเซ็ตกลับไปค่าเริ่มต้น
+      function resetToDefault() {
+        editor.value = defaultMarkdown;
+        updatePreview();
+      }
+
+      // ฟังก์ชันก็อปปี้ข้อความพร้อมเปลี่ยน UI ปุ่มเล็กน้อยให้มี Feedback เชิงบวก
+      function copyMarkdown() {
+        // ใช้คำสั่งนี้ก๊อปปี้ผ่าน Document ได้ชัวร์กว่าบน Iframe
+        const textArea = document.createElement("textarea");
+        textArea.value = editor.value;
+        document.body.appendChild(textArea);
+        textArea.select();
+        document.execCommand("copy");
+        textArea.remove();
+
+        // เปลี่ยนหน้าตาปุ่มชั่วคราว
+        const originalHTML = copyBtn.innerHTML;
+        copyBtn.innerHTML =
+          '<i data-lucide="check-circle-2" class="w-4 h-4 text-green-600"></i> <span class="text-green-600">คัดลอกแล้ว!</span>';
+        lucide.createIcons();
+
+        setTimeout(() => {
+          copyBtn.innerHTML = originalHTML;
+          lucide.createIcons();
+        }, 2000);
+      }
+
+      // ตอนเปิดหน้าเว็บครั้งแรก ให้เซ็ตค่าเริ่มต้นและ Render ทันที
+      editor.value = defaultMarkdown;
+      updatePreview();
+
+      // ดักจับเวลาพิมพ์ ถ้ามีการพิมพ์ให้เรียกฟังก์ชัน updatePreview ทันที
+      editor.addEventListener("input", updatePreview);
+    </script>
+  </body>
+</html>
