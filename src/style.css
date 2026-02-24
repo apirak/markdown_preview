@@ -24,6 +24,32 @@ body {
   background: #94a3b8;
 }
 
+/* --- Heading Size Variables --- */
+:root {
+  --heading-h1: 1.5em;
+  --heading-h2: 1.3em;
+  --heading-h3: 1.15em;
+  --heading-h4: 1.05em;
+  --heading-h5: 0.95em;
+  --heading-h6: 0.9em;
+}
+
+/* ขนาด Heading ใน Preview */
+#preview h1 { font-size: var(--heading-h1); }
+#preview h2 { font-size: var(--heading-h2); }
+#preview h3 { font-size: var(--heading-h3); }
+#preview h4 { font-size: var(--heading-h4); }
+#preview h5 { font-size: var(--heading-h5); }
+#preview h6 { font-size: var(--heading-h6); }
+
+/* ขนาด Heading ใน Editor (EasyMDE/CodeMirror) */
+.CodeMirror .cm-header-1 { font-size: var(--heading-h1) !important; }
+.CodeMirror .cm-header-2 { font-size: var(--heading-h2) !important; }
+.CodeMirror .cm-header-3 { font-size: var(--heading-h3) !important; }
+.CodeMirror .cm-header-4 { font-size: var(--heading-h4) !important; }
+.CodeMirror .cm-header-5 { font-size: var(--heading-h5) !important; }
+.CodeMirror .cm-header-6 { font-size: var(--heading-h6) !important; }
+
 /* --- EasyMDE Overrides --- */
 
 /* ให้ EasyMDE container เต็มพื้นที่ editor section */
