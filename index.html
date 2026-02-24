@@ -11,6 +11,9 @@
     <!-- Marked.js สำหรับแปลง Markdown เป็น HTML -->
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 
+    <!-- Mermaid.js สำหรับ Render ไดอะแกรม -->
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
+
     <!-- Lucide Icons สำหรับไอคอนสวยๆ -->
     <script src="https://unpkg.com/lucide@latest"></script>
 
@@ -365,19 +368,54 @@
       // ข้อความ Default ตามที่คุณ Bank ต้องการ (ผมจัดรูปประโยคเป็น Markdown ให้ดูอ่านง่ายขึ้นนิดนึงครับ)
       const defaultMarkdown = `ตอนนี้โปรเจกต์ 'Super App' มีปัญหาเรื่องงบครับ เดิมตั้งไว้ 1 ล้านบาท ตอนนี้ใช้ไปแล้ว 8 แสน เหลืออีกแค่ 2 แสน แต่ทีม Dev บอกว่าฟีเจอร์ที่ต้องทำยังมีอีก 3 อย่าง คือ ระบบจ่ายเงิน (สถานะ: กำลังทำ, ความยาก: สูง), ระบบสมาชิก (สถานะ: เสร็จแล้ว, ความยาก: ต่ำ), และระบบแต้มสะสม (สถานะ: ยังไม่ได้เริ่ม, ความยาก: กลาง) ทาง CTO กังวลว่าเงิน 2 แสนที่เหลือจะไม่พอจ่ายค่า Outsource ระบบจ่ายเงินที่ตั้งไว้ 1.5 แสน และค่า Server อีก 1 แสน พี่สมชายบอกว่าให้ช่วยสรุปให้ CEO ดูหน่อยว่ามีอะไรค้างบ้าง งบเหลือเท่าไหร่ และอันไหนเสี่ยงสุด`;
 
+      // ตั้งค่า Mermaid.js
+      mermaid.initialize({
+        startOnLoad: false,
+        theme: "default",
+      });
+
+      // สร้าง Custom Renderer สำหรับ Marked.js เพื่อดักจับ code block ที่เป็น mermaid
+      const renderer = new marked.Renderer();
+      const originalCodeRenderer = renderer.code.bind(renderer);
+      renderer.code = function ({ text, lang }) {
+        if (lang === "mermaid") {
+          return `<div class="mermaid">${text}</div>`;
+        }
+        return originalCodeRenderer({ text, lang });
+      };
+
       // ตั้งค่า Marked.js ให้รองรับการขึ้นบรรทัดใหม่แบบปกติ (เหมือนเวลาแชท)
       marked.setOptions({
         breaks: true,
         gfm: true,
+        renderer: renderer,
       });
 
+      // ตัวนับสำหรับสร้าง ID ไม่ซ้ำให้ Mermaid
+      let mermaidCounter = 0;
+
       // ฟังก์ชันอัปเดต Preview สดๆ
-      function updatePreview() {
+      async function updatePreview() {
         const markdownText = editor.value;
         // แปลง Markdown เป็น HTML
         const html = marked.parse(markdownText);
         // โยนใส่ฝั่งขวา
         preview.innerHTML = html;
+
+        // Render Mermaid diagrams ถ้ามี
+        const mermaidDivs = preview.querySelectorAll(".mermaid");
+        if (mermaidDivs.length > 0) {
+          for (const div of mermaidDivs) {
+            const id = `mermaid-${mermaidCounter++}`;
+            const graphDefinition = div.textContent;
+            try {
+              const { svg } = await mermaid.render(id, graphDefinition);
+              div.innerHTML = svg;
+            } catch (e) {
+              div.innerHTML = `<pre class="text-red-500 text-sm">Mermaid Error: ${e.message}</pre>`;
+            }
+          }
+        }
       }
 
       // ฟังก์ชันเปิด/ปิด Modal คู่มือ Markdown
