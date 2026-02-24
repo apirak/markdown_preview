@@ -6,6 +6,7 @@ import mermaid from "mermaid";
 import { createIcons, icons } from "lucide";
 import { defaultMarkdown } from "./default-content.js";
 import { initCheatSheet, toggleCheatSheet } from "./cheatsheet.js";
+import { initSiteLink } from "./components/site-link.js";
 
 // --- DOM Elements ---
 const textarea = document.getElementById("editor");
@@ -145,6 +146,7 @@ async function copyMarkdown() {
 // --- Initialize ---
 createIcons({ icons });
 initCheatSheet();
+initSiteLink();
 
 // ซ่อน toolbar เป็นค่าเริ่มต้น
 setToolbarVisibility(false);

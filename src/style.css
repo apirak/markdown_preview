@@ -101,3 +101,58 @@ body {
 .editor-toolbar button.fullscreen {
   display: none !important;
 }
+
+/* --- Site Link Animal Emoji Animation --- */
+[data-component="site-link"] {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  text-decoration: none;
+  color: inherit;
+  transition: color 0.2s ease;
+}
+
+
+.animal-emoji {
+  position: absolute;
+  left: 100%;
+  margin-left: 4px;
+  font-size: 1rem;
+  opacity: 0;
+  pointer-events: none;
+  will-change: transform, opacity;
+  /* Start position: hidden and rotated */
+  transform: translateY(0) rotate(0deg);
+}
+
+/* Peek out animation: slide out 60% and tilt head */
+.animal-emoji.peek-out {
+  animation: peekOut 300ms ease-out forwards;
+}
+
+/* Peek in animation: retreat and tilt back */
+.animal-emoji.peek-in {
+  animation: peekIn 300ms ease-in forwards;
+}
+
+@keyframes peekOut {
+  0% {
+    opacity: 0;
+    transform: translateX(-8px) rotate(-15deg);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(6px) rotate(10deg);
+  }
+}
+
+@keyframes peekIn {
+  0% {
+    opacity: 1;
+    transform: translateX(6px) rotate(10deg);
+  }
+  100% {
+    opacity: 0;
+    transform: translateX(-8px) rotate(-15deg);
+  }
+}
