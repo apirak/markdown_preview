@@ -9,5 +9,10 @@
   },
   "devDependencies": {
     "vite": "^6.0.0"
+  },
+  "dependencies": {
+    "lucide": "^0.575.0",
+    "marked": "^17.0.3",
+    "mermaid": "^11.12.3"
   }
 }
