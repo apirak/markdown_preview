@@ -5,7 +5,7 @@ import { marked, Renderer } from "marked";
 import mermaid from "mermaid";
 import { createIcons, icons } from "lucide";
 import { defaultMarkdown } from "./default-content.js";
-import { initCheatSheet, toggleCheatSheet } from "./cheatsheet.js";
+import { initHelpPanel } from "./help-panel.js";
 import { initSiteLink } from "./components/site-link.js";
 
 // --- DOM Elements ---
@@ -143,13 +143,65 @@ async function copyMarkdown() {
   }, 2000);
 }
 
+// --- Panel Toggle ---
+const panelState = { help: false, editor: true, preview: true };
+
+const panelElements = {
+  help: document.getElementById("help-panel"),
+  editor: document.getElementById("editor-panel"),
+  preview: document.getElementById("preview-panel"),
+};
+
+function getToggleBtn(panelName) {
+  return document.querySelector(
+    `[data-action="toggle-panel"][data-panel="${panelName}"]`,
+  );
+}
+
+function updatePanelVisibility() {
+  for (const [name, el] of Object.entries(panelElements)) {
+    const btn = getToggleBtn(name);
+    if (panelState[name]) {
+      el.classList.remove("hidden");
+      el.classList.add("flex");
+      btn.classList.add("bg-blue-100", "text-blue-700");
+      btn.classList.remove("bg-slate-100", "text-slate-600");
+    } else {
+      el.classList.add("hidden");
+      el.classList.remove("flex");
+      btn.classList.remove("bg-blue-100", "text-blue-700");
+      btn.classList.add("bg-slate-100", "text-slate-600");
+    }
+  }
+  // Refresh CodeMirror layout when panels change
+  setTimeout(() => easymde.codemirror.refresh(), 50);
+}
+
+function togglePanel(panelName) {
+  // ถ้าจะปิด ตรวจสอบว่าเหลืออย่างน้อย 1 panel
+  if (panelState[panelName]) {
+    const openCount = Object.values(panelState).filter(Boolean).length;
+    if (openCount <= 1) return; // ไม่ให้ปิด panel สุดท้าย
+  }
+  panelState[panelName] = !panelState[panelName];
+
+  // ถ้าเปิด Help panel ครั้งแรก ให้ init เนื้อหา
+  if (panelName === "help" && panelState.help) {
+    initHelpPanel();
+  }
+
+  updatePanelVisibility();
+}
+
 // --- Initialize ---
 createIcons({ icons });
-initCheatSheet();
 initSiteLink();
 
 // ซ่อน toolbar เป็นค่าเริ่มต้น
 setToolbarVisibility(false);
+
+// ตั้งค่า panel visibility เริ่มต้น
+updatePanelVisibility();
 
 // Render preview ครั้งแรก
 updatePreview();
@@ -157,11 +209,19 @@ updatePreview();
 // ดักจับเวลาพิมพ์ผ่าน CodeMirror
 easymde.codemirror.on("change", updatePreview);
 
-// ผูก Event กับปุ่มต่างๆ ผ่าน data attributes
+// ผูก Event กับปุ่มต่างๆ
 toolbarToggleBtn.addEventListener("click", toggleToolbar);
-document
-  .querySelector("[data-action='cheatsheet']")
-  .addEventListener("click", toggleCheatSheet);
+
+// Panel toggle buttons
+document.querySelectorAll("[data-action='toggle-panel']").forEach((btn) => {
+  btn.addEventListener("click", () => togglePanel(btn.dataset.panel));
+});
+
+// Panel close (x) buttons
+document.querySelectorAll("[data-action='close-panel']").forEach((btn) => {
+  btn.addEventListener("click", () => togglePanel(btn.dataset.panel));
+});
+
 document
   .querySelector("[data-action='reset']")
   .addEventListener("click", resetToDefault);

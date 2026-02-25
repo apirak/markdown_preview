@@ -49,33 +49,78 @@
           >
         </h1>
       </div>
-      <div class="flex items-center gap-3">
+      <div class="flex items-center gap-2">
         <button
-          data-action="toggle-toolbar"
-          class="flex items-center gap-2 px-4 py-2 text-sm font-medium text-slate-600 bg-slate-100 hover:bg-slate-200 rounded-md transition-colors duration-200"
+          data-action="toggle-panel"
+          data-panel="help"
+          class="flex items-center gap-2 px-3 py-2 text-sm font-medium text-slate-600 bg-slate-100 hover:bg-slate-200 rounded-md transition-colors duration-200"
         >
-          <i data-lucide="panel-top" class="w-4 h-4"></i> Toolbar
+          <i data-lucide="book-open" class="w-4 h-4"></i> Help
         </button>
         <button
-          data-action="cheatsheet"
-          class="flex items-center gap-2 px-4 py-2 text-sm font-medium text-slate-600 bg-slate-100 hover:bg-slate-200 rounded-md transition-colors duration-200"
+          data-action="toggle-panel"
+          data-panel="editor"
+          class="flex items-center gap-2 px-3 py-2 text-sm font-medium text-blue-700 bg-blue-100 hover:bg-blue-200 rounded-md transition-colors duration-200"
         >
-          <i data-lucide="book-open" class="w-4 h-4"></i> คู่มือ Markdown
+          <i data-lucide="square-pen" class="w-4 h-4"></i> Edit
+        </button>
+        <button
+          data-action="toggle-panel"
+          data-panel="preview"
+          class="flex items-center gap-2 px-3 py-2 text-sm font-medium text-blue-700 bg-blue-100 hover:bg-blue-200 rounded-md transition-colors duration-200"
+        >
+          <i data-lucide="eye" class="w-4 h-4"></i> Preview
+        </button>
+        <div class="w-px h-6 bg-slate-200 mx-1"></div>
+        <button
+          data-action="toggle-toolbar"
+          class="flex items-center gap-2 px-3 py-2 text-sm font-medium text-slate-600 bg-slate-100 hover:bg-slate-200 rounded-md transition-colors duration-200"
+        >
+          <i data-lucide="panel-top" class="w-4 h-4"></i> Toolbar
         </button>
       </div>
     </header>
 
-    <!-- ส่วนเนื้อหาหลัก แบ่งครึ่งซ้าย-ขวา -->
-    <main class="flex-1 flex flex-col md:flex-row overflow-hidden">
-      <!-- ซ้าย: Editor Area -->
+    <!-- ส่วนเนื้อหาหลัก แบ่ง 3 คอลัมน์: Help | Editor | Preview -->
+    <main class="flex-1 flex flex-row overflow-hidden">
+      <!-- Help Panel -->
       <section
-        class="w-full md:w-1/2 flex flex-col min-h-0 overflow-hidden border-b md:border-b-0 md:border-r border-slate-200 bg-white"
+        id="help-panel"
+        class="hidden flex-col min-h-0 overflow-hidden border-r border-slate-200 bg-white panel"
+        style="width: 320px; min-width: 320px"
       >
         <div
-          class="bg-slate-50 px-4 py-2 flex items-center justify-between border-b border-slate-200 text-sm font-semibold text-slate-600 shrink-0"
+          class="bg-slate-50 px-4 h-10 flex items-center justify-between border-b border-slate-200 text-sm font-semibold text-slate-600 shrink-0"
         >
           <div class="flex items-center gap-2">
-            <i data-lucide="terminal" class="w-4 h-4"></i>Editor
+            <i data-lucide="book-open" class="w-4 h-4 text-blue-500"></i> คู่มือ
+            Markdown
+          </div>
+          <button
+            data-action="close-panel"
+            data-panel="help"
+            class="p-1 hover:bg-slate-200 rounded transition-colors"
+          >
+            <i data-lucide="x" class="w-4 h-4 text-slate-400"></i>
+          </button>
+        </div>
+        <div
+          id="help-content"
+          class="flex-1 min-h-0 overflow-y-auto"
+          style="overscroll-behavior-y: none"
+        ></div>
+      </section>
+
+      <!-- Editor Panel -->
+      <section
+        id="editor-panel"
+        class="flex flex-col min-h-0 overflow-hidden border-r border-slate-200 bg-white panel flex-1"
+      >
+        <div
+          class="bg-slate-50 px-4 h-10 flex items-center justify-between border-b border-slate-200 text-sm font-semibold text-slate-600 shrink-0"
+        >
+          <div class="flex items-center gap-2">
+            <i data-lucide="square-pen" class="w-4 h-4"></i>Editor
           </div>
           <div class="flex items-center gap-2">
             <button
@@ -91,6 +136,13 @@
             >
               <i data-lucide="copy" class="w-3.5 h-3.5"></i> คัดลอก
             </button>
+            <button
+              data-action="close-panel"
+              data-panel="editor"
+              class="p-1 hover:bg-slate-200 rounded transition-colors ml-1"
+            >
+              <i data-lucide="x" class="w-4 h-4 text-slate-400"></i>
+            </button>
           </div>
         </div>
         <div
@@ -101,12 +153,21 @@
         </div>
       </section>
 
-      <!-- ขวา: Live Preview Area -->
-      <section class="w-full md:w-1/2 flex flex-col bg-white">
+      <!-- Preview Panel -->
+      <section id="preview-panel" class="flex flex-col bg-white panel flex-1">
         <div
-          class="bg-slate-50 px-4 py-3 flex items-center gap-2 border-b border-slate-200 text-sm font-semibold text-slate-600 shrink-0"
+          class="bg-slate-50 px-4 h-10 flex items-center justify-between border-b border-slate-200 text-sm font-semibold text-slate-600 shrink-0"
         >
-          <i data-lucide="eye" class="w-4 h-4 text-blue-500"></i> Live Preview
+          <div class="flex items-center gap-2">
+            <i data-lucide="eye" class="w-4 h-4 text-blue-500"></i> Live Preview
+          </div>
+          <button
+            data-action="close-panel"
+            data-panel="preview"
+            class="p-1 hover:bg-slate-200 rounded transition-colors"
+          >
+            <i data-lucide="x" class="w-4 h-4 text-slate-400"></i>
+          </button>
         </div>
         <div
           id="preview"
@@ -114,9 +175,6 @@
         ></div>
       </section>
     </main>
-
-    <!-- Modal คู่มือ Markdown -->
-    <div id="cheatSheetModal" class="fixed inset-0 z-50 hidden"></div>
 
     <script type="module" src="/src/main.js"></script>
   </body>
