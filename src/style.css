@@ -159,3 +159,9 @@ body {
     transform: translateX(-8px) rotate(-15deg);
   }
 }
+
+/* --- Task List: ซ่อน bullet --- */
+#preview li:has(input[type="checkbox"]) {
+  list-style-type: none;
+  padding-left: 0;
+}
