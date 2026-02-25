@@ -5,7 +5,7 @@ import { createIcons, icons } from "lucide";
  */
 export function createHelpContent() {
   return `
-    <div class="p-5 space-y-6 text-sm text-slate-700">
+    <div class="p-5 space-y-6 text-sm text-slate-700 max-w-full mx-auto">
 
       <!-- Headings -->
       <section>
