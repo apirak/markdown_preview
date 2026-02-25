@@ -77,8 +77,6 @@ export function createCheatSheetHTML() {
               class="bg-slate-50 rounded-lg p-3 font-mono text-xs space-y-1"
             >
               <div>---</div>
-              <div>***</div>
-              <div>___</div>
             </div>
           </div>
           <div>
@@ -108,9 +106,10 @@ export function createCheatSheetHTML() {
               <div class="text-slate-500">
                 <!-- รายการแบบไม่เรียงลำดับ -->
               </div>
-              <div>- รายการที่ 1</div>
-              <div>- รายการที่ 2</div>
-              <div>&nbsp;&nbsp;- รายการย่อย</div>
+              <div>* รายการที่ 1</div>
+              <div>* รายการที่ 2</div>
+              <div>&nbsp;&nbsp;* รายการย่อย</div>
+              <div class="mt-2">หรือใช้ - แทน * ก็ได้</div>
               <div class="mt-2 text-slate-500">
                 <!-- รายการแบบเรียงลำดับ -->
               </div>
@@ -149,7 +148,7 @@ export function createCheatSheetHTML() {
           <div>
             <h3 class="font-bold text-slate-900 mb-3 flex items-center gap-2">
               <i data-lucide="image" class="w-4 h-4 text-blue-500"></i>
-              รูปภาพพร้อมขนาด
+              รูปภาพพร้อม Title
             </h3>
             <div
               class="bg-slate-50 rounded-lg p-3 font-mono text-xs space-y-1"
