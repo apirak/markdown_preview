@@ -171,6 +171,26 @@ body {
   transition: flex 0.2s ease;
 }
 
+/* --- Help Panel Multi-Column Layout --- */
+#help-content > div {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+  align-items: flex-start;
+}
+
+/* แต่ละ section มี max-width และ flexible */
+#help-content section {
+  flex: 1 1 280px;
+  max-width: 320px;
+}
+
+/* Tips section ขยายเต็มความกว้างเสมอ */
+#help-content .col-span-full {
+  flex: 1 1 100%;
+  max-width: 100%;
+}
+
 /* Help panel scrollbar */
 #help-content::-webkit-scrollbar {
   width: 6px;
