@@ -105,14 +105,17 @@ export function createHelpContent() {
         <h3 class="font-bold text-slate-900 mb-2 flex items-center gap-2">
           <i data-lucide="table" class="w-4 h-4 text-blue-500"></i> ตาราง (Table)
         </h3>
-        <div class="bg-slate-50 rounded-lg p-3 font-mono  space-y-1">
-          <div>| หัวข้อ 1 | หัวข้อ 2 | หัวข้อ 3 |</div>
-          <div>| -------- | :------: | -------: |</div>
-          <div>| ซ้าย | กลาง | ขวา |</div>
-          <div>| ข้อมูล | ข้อมูล | ข้อมูล |</div>
-          <div class="mt-2 text-slate-400 text-[10px]">
+        <div class="bg-slate-50 rounded-lg p-3 font-mono text-sm space-y-1">
+          <pre>
+| หัวข้อ 1 | หัวข้อ 2 | หัวข้อ 3 |
+| ------ | :----: | -----: |
+| ซ้าย    |  กลาง  |    ขวา |
+| ข้อมูล   |  ข้อมูล  |   ข้อมูล |
+          </pre>
+          <div class="mt-4 text-slate-400 text-[10px]">
             :-- ชิดซ้าย | :--: กลาง | --: ชิดขวา
           </div>
+
         </div>
       </section>
 
