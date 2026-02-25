@@ -51,6 +51,13 @@
       </div>
       <div class="flex items-center gap-2">
         <button
+          data-action="toggle-toolbar"
+          class="flex items-center gap-2 px-3 py-2 text-sm font-medium text-slate-600 bg-slate-100 hover:bg-slate-200 rounded-md transition-colors duration-200"
+        >
+          <i data-lucide="panel-top" class="w-4 h-4"></i> Toolbar
+        </button>
+        <div class="w-px h-6 bg-slate-200 mx-1"></div>
+        <button
           data-action="toggle-panel"
           data-panel="help"
           class="flex items-center gap-2 px-3 py-2 text-sm font-medium text-slate-600 bg-slate-100 hover:bg-slate-200 rounded-md transition-colors duration-200"
@@ -70,13 +77,6 @@
           class="flex items-center gap-2 px-3 py-2 text-sm font-medium text-blue-700 bg-blue-100 hover:bg-blue-200 rounded-md transition-colors duration-200"
         >
           <i data-lucide="eye" class="w-4 h-4"></i> Preview
-        </button>
-        <div class="w-px h-6 bg-slate-200 mx-1"></div>
-        <button
-          data-action="toggle-toolbar"
-          class="flex items-center gap-2 px-3 py-2 text-sm font-medium text-slate-600 bg-slate-100 hover:bg-slate-200 rounded-md transition-colors duration-200"
-        >
-          <i data-lucide="panel-top" class="w-4 h-4"></i> Toolbar
         </button>
       </div>
     </header>

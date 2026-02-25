@@ -132,7 +132,7 @@ export function createHelpContent() {
       <!-- Footnote -->
       <section>
         <h3 class="font-bold text-slate-900 mb-2 flex items-center gap-2">
-          <i data-lucide="foot-prints" class="w-4 h-4 text-blue-500"></i> Footnote
+          <i data-lucide="footprints" class="w-4 h-4 text-blue-500"></i> Footnote
         </h3>
         <div class="bg-slate-50 rounded-lg p-3 font-mono text-xs space-y-1">
           <div>ข้อความ[^1]</div>
