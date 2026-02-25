@@ -159,13 +159,27 @@ function getToggleBtn(panelName) {
 }
 
 function updatePanelVisibility() {
+  const openCount = Object.values(panelState).filter(Boolean).length;
+  const canClose = openCount > 1;
+
   for (const [name, el] of Object.entries(panelElements)) {
     const btn = getToggleBtn(name);
+    const closeBtn = document.querySelector(
+      `[data-action="close-panel"][data-panel="${name}"]`,
+    );
+
     if (panelState[name]) {
       el.classList.remove("hidden");
       el.classList.add("flex");
       btn.classList.add("bg-blue-100", "text-blue-700");
       btn.classList.remove("bg-slate-100", "text-slate-600");
+
+      // Disable close button if only 1 panel is open
+      if (!canClose) {
+        closeBtn.classList.add("opacity-30", "cursor-not-allowed", "pointer-events-none");
+      } else {
+        closeBtn.classList.remove("opacity-30", "cursor-not-allowed", "pointer-events-none");
+      }
     } else {
       el.classList.add("hidden");
       el.classList.remove("flex");
