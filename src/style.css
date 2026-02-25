@@ -73,6 +73,9 @@ body {
 }
 
 .EasyMDEContainer .editor-toolbar {
+  position: sticky;
+  top: 0;
+  z-index: 10;
   border-top: none !important;
   border-left: none !important;
   border-right: none !important;
