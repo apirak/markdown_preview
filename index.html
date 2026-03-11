@@ -9,7 +9,11 @@
     <script src="https://cdn.tailwindcss.com?plugins=typography"></script>
 
     <!-- KaTeX CSS for LaTeX math rendering -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" crossorigin="anonymous">
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css"
+      crossorigin="anonymous"
+    />
 
     <!-- Favicon -->
     <link
@@ -148,10 +152,25 @@
           </div>
         </div>
         <div
-          class="flex-1 min-h-0 overflow-auto"
+          class="flex-1 min-h-0 overflow-auto relative"
           style="overscroll-behavior-y: none"
         >
           <textarea id="editor"></textarea>
+          <div id="template-list" class="template-list hidden">
+            <div class="template-list-header">
+              <span class="template-list-title">Choose a template</span>
+              <button
+                class="template-list-close"
+                data-action="close-templates"
+                aria-label="Close"
+              >
+                <i data-lucide="x" class="w-4 h-4"></i>
+              </button>
+            </div>
+            <div class="template-list-items" id="template-list-items">
+              <!-- Templates will be rendered here -->
+            </div>
+          </div>
         </div>
       </section>
 

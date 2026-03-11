@@ -10,7 +10,10 @@ import katex from "katex";
 import { initHelpPanel } from "./help-panel.js";
 import { initSiteLink } from "./components/site-link.js";
 import { showToast } from "./toast.js";
-import { initTemplateModal, openModal } from "./template-modal.js";
+import {
+  initTemplateList,
+  toggle as toggleTemplateList,
+} from "./template-list.js";
 import { template as simpleTemplate } from "./templates/simple-template.js";
 import type { PanelState, PanelName, DownloadFormat } from "./types.js";
 
@@ -191,14 +194,6 @@ async function updatePreview(): Promise<void> {
       }
     }
   }
-}
-
-// --- ฟังก์ชันรีเซ็ตกลับไปค่าเริ่มต้น ---
-function resetToDefault(): void {
-  openModal((content) => {
-    easymde.value(content);
-    updatePreview();
-  });
 }
 
 // --- ฟังก์ชันคัดลอก Markdown (ใช้ Clipboard API แทน execCommand ที่ deprecated) ---
@@ -555,7 +550,7 @@ function handleDownload(format: DownloadFormat): void {
 // --- Initialize ---
 createIcons({ icons });
 initSiteLink();
-initTemplateModal();
+initTemplateList();
 
 // ซ่อน toolbar เป็นค่าเริ่มต้น
 setToolbarVisibility(false);
@@ -586,7 +581,12 @@ document.querySelectorAll("[data-action='close-panel']").forEach((btn) => {
 
 document
   .querySelector("[data-action='reset']")
-  ?.addEventListener("click", resetToDefault);
+  ?.addEventListener("click", () => {
+    toggleTemplateList((content) => {
+      easymde.value(content);
+      updatePreview();
+    });
+  });
 document
   .querySelector("[data-action='copy']")
   ?.addEventListener("click", copyMarkdown);
