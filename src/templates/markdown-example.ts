@@ -6,65 +6,91 @@ export const template: Template = {
   icon: "📝",
   category: "example",
   name: "Markdown Example",
-  description: "A real-world document showcasing everyday Markdown usage",
-  content: `# 📝 System User Guide
+  description: "Prompt-style document showcasing Markdown features",
+  content: `# 📝 Prompt: Build a Landing Page
 
-Welcome to the system user guide. This document will help you get started quickly.
+## 🎯 Goal
 
-## 🚀 Getting Started
+Create a **responsive landing page** for a SaaS product that converts visitors into trial users, with a clean and modern design.
 
-Our system is designed to be easy and efficient. You can get started by:
+## 🧑‍💼 Role
 
-1. Sign up with your email
-2. Verify your identity via OTP
-3. Start using the system right away
+You are a senior frontend developer with expertise in *UI/UX best practices* and ~~jQuery~~ modern frameworks like React, Vue, or Svelte.
 
-### Key Features You Should Know
+## 📖 Context
 
-| Feature | Status | Price |
-|---------|--------|-------|
-| Member Management | ✅ Available | Free |
-| Notification System | ✅ Available | Free |
-| Data Analytics | 🔒 Subscription required | $5/month |
-| AI Assistant | 🔒 Subscription required | $15/month |
+Our startup is launching a new **project management tool** called *TaskFlow*. We need a landing page before the product launch on **April 15, 2025**. The page must load fast, look great on mobile, and clearly communicate our value proposition.
 
-## 💡 Usage Tips
+> **Key insight:** 70% of our target users browse on mobile devices, so mobile-first design is critical.
 
-### Task Management
-Manage your tasks efficiently:
+### Target Audience
 
-- [ ] Set daily goals
-- [x] Create a new project
-- [x] Add team members
-- [ ] Check progress
+| Segment | Age Range | Pain Point | Priority |
+|---------|-----------|------------|----------|
+| Freelancers | 25–35 | Juggling multiple clients | 🔴 High |
+| Small teams | 28–40 | No centralized task board | 🔴 High |
+| Managers | 35–50 | Lack of progress visibility | 🟡 Medium |
+| Students | 18–25 | Staying organized | 🟢 Low |
 
-### Keyboard Shortcuts
+## 📋 Requirements
 
-> **Tip:** Use shortcuts to boost your productivity
-> - \`Ctrl + K\` - Search
-> - \`Ctrl + N\` - Create new
-> - \`Ctrl + S\` - Save
+### Must-Have Sections
 
-### Text Formatting
+- [x] Hero section with headline and CTA button
+- [x] Feature highlights (3 cards)
+- [x] Pricing table
+- [ ] Customer testimonials
+- [ ] FAQ accordion
+- [ ] Footer with social links
 
-You can use **bold** or *italic* to emphasize important text, or use ~~strikethrough~~ to show cancelled items.
+### Technical Requirements
 
-\`\`\`javascript
-// Code example
-function greet(name) {
-  return \`Hello, \${name}!\`;
-}
+1. Use **semantic HTML5** elements
+2. Style with *CSS Grid* and *Flexbox*
+3. Ensure \`lighthouse score >= 90\` for performance
+4. Support dark mode via \`prefers-color-scheme\`
+
+## 🔧 Instructions
+
+Follow these steps in order:
+
+1. Set up the project structure
+2. Build the hero section first
+3. Add responsive breakpoints at \`768px\` and \`1024px\`
+4. Implement lazy loading for images
+5. Test on real devices before deployment
+
+### Code Snippet
+
+Here's the recommended HTML structure:
+
+\`\`\`html
+<section class="hero">
+  <h1>Manage tasks, not chaos.</h1>
+  <p>TaskFlow keeps your team aligned and productive.</p>
+  <a href="/signup" class="cta-button">Start Free Trial</a>
+</section>
 \`\`\`
 
-## 📞 Contact Us
+### Color Palette
 
-If you have questions or need help:
+> Use these brand colors consistently:
+> - **Primary:** \`#6366f1\` (Indigo)
+> - **Secondary:** \`#f59e0b\` (Amber)
+> - **Background:** \`#f8fafc\` (Slate 50)
 
-1. 📧 Email: support@example.com
-2. 💬 Chat: via Live Chat
-3. 📱 Call: +1-XXX-XXX-XXXX
+## 📌 Constraints
 
----
+- Page must load in under **2 seconds** on 3G
+- Total bundle size ≤ **150KB** gzipped
+- No external font loading — use system fonts
+- Must pass **WCAG 2.1 AA** accessibility standards
 
-*Last updated: March 2025*`,
+## ✅ Output Format
+
+Deliver:
+
+1. A single \`index.html\` file
+2. A \`styles.css\` file (no Tailwind — plain CSS only)
+3. A brief \`README.md\` with setup instructions`,
 };

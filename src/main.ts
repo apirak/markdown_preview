@@ -11,7 +11,7 @@ import { initHelpPanel } from "./help-panel.js";
 import { initSiteLink } from "./components/site-link.js";
 import { showToast } from "./toast.js";
 import { initTemplateModal, openModal } from "./template-modal.js";
-import { template as thaiPractice } from "./templates/thai-practice.js";
+import { template as markdownExample } from "./templates/markdown-example.js";
 import type { PanelState, PanelName, DownloadFormat } from "./types.js";
 
 // --- DOM Elements ---
@@ -34,7 +34,12 @@ mermaid.initialize({
 // สร้าง Custom Renderer สำหรับ Marked.js เพื่อดักจับ code block ที่เป็น mermaid
 const renderer = new Renderer();
 const originalCodeRenderer = renderer.code.bind(renderer);
-renderer.code = function (code: { text: string; lang?: string; type: "code"; raw: string }): string {
+renderer.code = function (code: {
+  text: string;
+  lang?: string;
+  type: "code";
+  raw: string;
+}): string {
   if (code.lang === "mermaid") {
     return `<div class="mermaid">${code.text}</div>`;
   }
@@ -51,7 +56,7 @@ marked.setOptions({
 // --- EasyMDE Setup ---
 const easymde = new EasyMDE({
   element: textarea,
-  initialValue: thaiPractice.content,
+  initialValue: markdownExample.content,
   placeholder: "Type here...",
   spellChecker: false,
   status: false,
@@ -134,7 +139,7 @@ async function updatePreview(): Promise<void> {
     const walker = document.createTreeWalker(
       preview,
       NodeFilter.SHOW_TEXT,
-      null
+      null,
     );
 
     let node: Node | null;
@@ -241,7 +246,10 @@ function updatePanelVisibility(): void {
   const openCount = Object.values(panelState).filter(Boolean).length;
   const canClose = openCount > 1;
 
-  for (const [name, el] of Object.entries(panelElements) as [PanelName, HTMLElement][]) {
+  for (const [name, el] of Object.entries(panelElements) as [
+    PanelName,
+    HTMLElement,
+  ][]) {
     const btn = getToggleBtn(name);
     const closeBtn = document.querySelector(
       `[data-action="close-panel"][data-panel="${name}"]`,
@@ -300,7 +308,11 @@ function togglePanel(panelName: PanelName): void {
 async function downloadHTML(): Promise<void> {
   try {
     const previewContent = document.getElementById("preview")?.innerHTML || "";
-    const title = easymde.value().split("\n")[0].replace(/^#+\s*/, "") || "markdown-export";
+    const title =
+      easymde
+        .value()
+        .split("\n")[0]
+        .replace(/^#+\s*/, "") || "markdown-export";
 
     // สร้างไฟล์ HTML เต็มรูปแบบพร้อม Tailwind CDN, KaTeX, Font และ custom styles
     const htmlContent = `<!DOCTYPE html>
@@ -381,7 +393,10 @@ async function downloadHTML(): Promise<void> {
 // ฟังก์ชันดาวน์โหลดเป็น PDF
 async function downloadPDF(): Promise<void> {
   try {
-    showToast("กำลังสร้าง PDF กรุณารอสักครู่...", { type: "info", duration: 5000 });
+    showToast("กำลังสร้าง PDF กรุณารอสักครู่...", {
+      type: "info",
+      duration: 5000,
+    });
 
     // รอให้ fonts โหลดเสร็จก่อน
     await document.fonts.ready;
@@ -413,7 +428,11 @@ async function downloadPDF(): Promise<void> {
       });
 
       const imgData = canvas.toDataURL("image/png", 1.0);
-      const title = easymde.value().split("\n")[0].replace(/^#+\s*/, "") || "markdown-export";
+      const title =
+        easymde
+          .value()
+          .split("\n")[0]
+          .replace(/^#+\s*/, "") || "markdown-export";
 
       // คำนวณขนาด PDF (ให้พอดี A4 โดยรักษาสัดส่วน)
       const imgWidth = canvas.width;
@@ -446,7 +465,10 @@ async function downloadPDF(): Promise<void> {
 // ฟังก์ชันดาวน์โหลดเป็น PNG
 async function downloadPNG(): Promise<void> {
   try {
-    showToast("กำลังสร้างรูปภาพ กรุณารอสักครู่...", { type: "info", duration: 5000 });
+    showToast("กำลังสร้างรูปภาพ กรุณารอสักครู่...", {
+      type: "info",
+      duration: 5000,
+    });
 
     // รอให้ fonts โหลดเสร็จก่อน
     await document.fonts.ready;
@@ -477,23 +499,31 @@ async function downloadPNG(): Promise<void> {
         windowHeight: clonedElement.scrollHeight,
       });
 
-      const title = easymde.value().split("\n")[0].replace(/^#+\s*/, "") || "markdown-export";
+      const title =
+        easymde
+          .value()
+          .split("\n")[0]
+          .replace(/^#+\s*/, "") || "markdown-export";
 
       // ดาวน์โหลดเป็น PNG
-      canvas.toBlob((blob) => {
-        if (blob) {
-          const url = URL.createObjectURL(blob);
-          const a = document.createElement("a");
-          a.href = url;
-          a.download = `${title}.png`;
-          document.body.appendChild(a);
-          a.click();
-          document.body.removeChild(a);
-          URL.revokeObjectURL(url);
+      canvas.toBlob(
+        (blob) => {
+          if (blob) {
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement("a");
+            a.href = url;
+            a.download = `${title}.png`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
 
-          showToast("ดาวน์โหลด PNG สำเร็จ", { type: "success" });
-        }
-      }, "image/png", 1.0);
+            showToast("ดาวน์โหลด PNG สำเร็จ", { type: "success" });
+          }
+        },
+        "image/png",
+        1.0,
+      );
     } finally {
       // ลบ temporary container
       document.body.removeChild(container);
