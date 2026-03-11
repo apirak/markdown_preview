@@ -11,7 +11,7 @@ import { initHelpPanel } from "./help-panel.js";
 import { initSiteLink } from "./components/site-link.js";
 import { showToast } from "./toast.js";
 import { initTemplateModal, openModal } from "./template-modal.js";
-import { template as markdownExample } from "./templates/markdown-example.js";
+import { template as simpleTemplate } from "./templates/simple-template.js";
 import type { PanelState, PanelName, DownloadFormat } from "./types.js";
 
 // --- DOM Elements ---
@@ -56,7 +56,7 @@ marked.setOptions({
 // --- EasyMDE Setup ---
 const easymde = new EasyMDE({
   element: textarea,
-  initialValue: markdownExample.content,
+  initialValue: simpleTemplate.content,
   placeholder: "Type here...",
   spellChecker: false,
   status: false,
