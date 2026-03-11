@@ -1,4 +1,4 @@
-import type { Template } from '../types.js';
+import type { Template } from "../types.js";
 
 // Template: Markdown Example
 export const template: Template = {
@@ -6,65 +6,65 @@ export const template: Template = {
   icon: "📝",
   category: "example",
   name: "Markdown Example",
-  description: "ตัวอย่างเอกสารจริงที่แสดงการใช้ Markdown ในชีวิตประจำวัน",
-  content: `# 📝 คู่มือการใช้งานระบบ
+  description: "A real-world document showcasing everyday Markdown usage",
+  content: `# 📝 System User Guide
 
-ยินดีต้อนรับสู่คู่มือการใช้งานระบบ นี่คือเอกสารที่จะช่วยให้คุณเริ่มต้นใช้งานได้อย่างรวดเร็ว
+Welcome to the system user guide. This document will help you get started quickly.
 
-## 🚀 การเริ่มต้น
+## 🚀 Getting Started
 
-ระบบของเราออกแบบมาเพื่อให้ใช้งานง่ายและมีประสิทธิภาพ คุณสามารถเริ่มต้นได้โดย:
+Our system is designed to be easy and efficient. You can get started by:
 
-1. สมัครสมาชิกด้วยอีเมลของคุณ
-2. ยืนยันตัวตนผ่าน OTP
-3. เริ่มต้นใช้งานได้ทันที
+1. Sign up with your email
+2. Verify your identity via OTP
+3. Start using the system right away
 
-### ฟีเจอร์หลักที่คุณต้องรู้
+### Key Features You Should Know
 
-| ฟีเจอร์ | สถานะ | ราคา |
-|---------|--------|------|
-| ระบบจัดการสมาชิก | ✅ ใช้งานได้ | ฟรี |
-| ระบบแจ้งเตือน | ✅ ใช้งานได้ | ฟรี |
-| ระบบวิเคราะห์ข้อมูล | 🔒 ต้องสมัครสมาชิก | 199฿/เดือน |
-| ระบบ AI Assistant | 🔒 ต้องสมัครสมาชิก | 499฿/เดือน |
+| Feature | Status | Price |
+|---------|--------|-------|
+| Member Management | ✅ Available | Free |
+| Notification System | ✅ Available | Free |
+| Data Analytics | 🔒 Subscription required | $5/month |
+| AI Assistant | 🔒 Subscription required | $15/month |
 
-## 💡 เคล็ดลับการใช้งาน
+## 💡 Usage Tips
 
 ### Task Management
-จัดการงานของคุณได้อย่างมีประสิทธิภาพ:
+Manage your tasks efficiently:
 
-- [ ] ตั้งเป้าหมายรายวัน
-- [x] สร้างโปรเจกต์ใหม่
-- [x] เพิ่มสมาชิกในทีม
-- [ ] ตรวจสอบความคืบหน้า
+- [ ] Set daily goals
+- [x] Create a new project
+- [x] Add team members
+- [ ] Check progress
 
 ### Keyboard Shortcuts
 
-> **Tip:** ใช้ปุ่มลัดเพื่อเพิ่มประสิทธิภาพการทำงาน
-> - \`Ctrl + K\` - ค้นหา
-> - \`Ctrl + N\` - สร้างใหม่
-> - \`Ctrl + S\` - บันทึก
+> **Tip:** Use shortcuts to boost your productivity
+> - \`Ctrl + K\` - Search
+> - \`Ctrl + N\` - Create new
+> - \`Ctrl + S\` - Save
 
-### รูปแบบข้อความ
+### Text Formatting
 
-คุณสามารถใช้ **ตัวหนา** หรือ *ตัวเอียง* เพื่อเน้นข้อความสำคัญ หรือใช้ ~~ขีดทับ~~ เพื่อแสดงสิ่งที่ยกเลิก
+You can use **bold** or *italic* to emphasize important text, or use ~~strikethrough~~ to show cancelled items.
 
 \`\`\`javascript
-// ตัวอย่างโค้ด
+// Code example
 function greet(name) {
   return \`Hello, \${name}!\`;
 }
 \`\`\`
 
-## 📞 ติดต่อเรา
+## 📞 Contact Us
 
-หากคุณมีคำถามหรือต้องการความช่วยเหลือ:
+If you have questions or need help:
 
-1. 📧 อีเมล: support@example.com
-2. 💬 แชท: ทาง Line Official
-3. 📱 โทร: 02-XXX-XXXX
+1. 📧 Email: support@example.com
+2. 💬 Chat: via Live Chat
+3. 📱 Call: +1-XXX-XXX-XXXX
 
 ---
 
-*อัปเดตล่าสุด: มีนาคม 2025*`,
+*Last updated: March 2025*`,
 };

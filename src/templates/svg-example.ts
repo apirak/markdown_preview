@@ -6,10 +6,10 @@ export const template: Template = {
   icon: "🎨",
   category: "example",
   name: "SVG Example",
-  description: "ตัวอย่างเอกสารที่มี SVG ภาพประกอบ",
-  content: `# 🎨 แบบฝึกหัดผสมสีสำหรับเด็กๆ
+  description: "Example document with SVG illustrations",
+  content: `# 🎨 Color Mixing Quiz for Kids
 
-สวัสดีน้องๆ! มาเรียนรู้การผสมสีกันเถอะ เมื่อเราเอาสีสองสีมาผสมกัน จะเกิดสีใหม่สวยๆ ขึ้นมา!
+Hello kids! Let's learn about color mixing. When we mix two colors together, we get a beautiful new color!
 
 <svg width="320" height="60" viewBox="0 0 320 60">
   <circle cx="30" cy="30" r="25" fill="#ef4444" opacity="0.85"/>
@@ -20,7 +20,7 @@ export const template: Template = {
   <circle cx="270" cy="30" r="25" fill="#a855f7" opacity="0.85"/>
 </svg>
 
-### สีแดง + สีเหลือง = สีอะไร?
+### Red + Yellow = What color?
 
 <svg width="420" height="130" viewBox="0 0 420 130">
   <path d="M38 32 Q55 8 72 32" fill="none" stroke="#b91c1c" stroke-width="4" stroke-linecap="round"/>
@@ -48,5 +48,5 @@ export const template: Template = {
   <text x="375" y="84" text-anchor="middle" fill="#999" font-size="36" font-weight="bold">?</text>
 </svg>
 
-**ตัวเลือก:** 🟢 ก. สีเขียว | 🟠 ข. สีส้ม | 🟣 ค. สีม่วง`,
+**Choices:** 🟢 A. Green | 🟠 B. Orange | 🟣 C. Purple`,
 };

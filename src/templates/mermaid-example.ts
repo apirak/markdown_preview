@@ -1,4 +1,4 @@
-import type { Template } from '../types.js';
+import type { Template } from "../types.js";
 
 // Template: Mermaid Example
 export const template: Template = {
@@ -6,18 +6,18 @@ export const template: Template = {
   icon: "📊",
   category: "example",
   name: "Mermaid Example",
-  description: "ตัวอย่างเอกสารที่มี Mermaid diagrams หลากหลายประเภท",
-  content: `# 📊 คู่มือสถาปัตยกรรมระบบ
+  description: "Example document with various Mermaid diagram types",
+  content: `# 📊 System Architecture Guide
 
-เอกสารนี้อธิบายสถาปัตยกรรมและ flow การทำงานของระบบ E-commerce ของเรา
+This document describes the architecture and workflow of our E-commerce system.
 
-## 🏗️ สถาปัตยกรรมระบบ
+## 🏗️ System Architecture
 
-ระบบประกอบด้วย 3 ส่วนหลัก คือ Frontend, Backend และ Database
+The system consists of 3 main parts: Frontend, Backend, and Database.
 
 \`\`\`mermaid
 graph TD
-    A[ผู้ใช้] --> B[Frontend<br/>React App]
+    A[User] --> B[Frontend<br/>React App]
     B --> C[API Gateway]
     C --> D[Auth Service]
     C --> E[Product Service]
@@ -38,53 +38,53 @@ graph TD
     style I fill:#e8f5e9
 \`\`\`
 
-## 🔄 วงจรการสั่งซื้อสินค้า
+## 🔄 Order Flow
 
-Flow การสั่งซื้อเริ่มจากการเลือกสินค้าจนถึงการชำระเงิน
+The order flow starts from selecting products to making payment.
 
 \`\`\`mermaid
 flowchart LR
-    A[เลือกสินค้า] --> B[เพิ่มลงตะกร้า]
-    B --> C{ตะกร้าว่าง?}
-    C -->|ใช่| A
-    C -->|ไม่| D[ดูรายการ]
-    D --> E[ยืนยันคำสั่งซื้อ]
-    E --> F[เข้าสู่ระบบ?]
+    A[Select Product] --> B[Add to Cart]
+    B --> C{Cart Empty?}
+    C -->|Yes| A
+    C -->|No| D[View Items]
+    D --> E[Confirm Order]
+    E --> F[Logged In?]
 
-    F -->|ไม่| G[ล็อกอิน/สมัครสมาชิก]
+    F -->|No| G[Login/Register]
     G --> E
-    F -->|ใช่| H[ชำระเงิน]
+    F -->|Yes| H[Make Payment]
 
-    H --> I{ชำระสำเร็จ?}
-    I -->|ไม่สำเร็จ| J[แจ้งเตือน]
-    I -->|สำเร็จ| K[ยืนยันคำสั่งซื้อ]
-    K --> L[ส่งอีเมลยืนยัน]
+    H --> I{Payment Success?}
+    I -->|Failed| J[Show Alert]
+    I -->|Success| K[Confirm Order]
+    K --> L[Send Confirmation Email]
 
     style A fill:#e3f2fd
     style K fill:#c8e6c9
     style I fill:#fff9c4
 \`\`\`
 
-## 📈 ยอดขายรายเดือน
+## 📈 Monthly Sales
 
-สถิติยอดขายของปี 2024
+Sales statistics for 2024
 
 \`\`\`mermaid
 xychart-beta
-    title "ยอดขายรายเดือน (บาท)"
-    x-axis ["ม.ค.", "ก.พ.", "มี.ค.", "เม.ย.", "พ.ค.", "มิ.ย.", "ก.ค.", "ส.ค.", "ก.ย.", "ต.ค.", "พ.ย.", "ธ.ค."]
-    y-axis "ยอดขาย (ล้านบาท)" 0 --> 10
+    title "Monthly Sales (USD)"
+    x-axis ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
+    y-axis "Sales (x1000 USD)" 0 --> 10
     bar [5.2, 4.8, 6.1, 5.9, 7.2, 6.8, 8.1, 7.9, 6.5, 7.8, 8.5, 9.2]
     line [5.2, 4.8, 6.1, 5.9, 7.2, 6.8, 8.1, 7.9, 6.5, 7.8, 8.5, 9.2]
 \`\`\`
 
-## 🎯 โครงสร้างทีม
+## 🎯 Team Structure
 
-ทีมพัฒนาประกอบด้วยบทบาทที่แตกต่างกัน
+The development team consists of different roles.
 
 \`\`\`mermaid
 mindmap
-  root((ทีมพัฒนา))
+  root((Dev Team))
     Frontend
       React Dev
       UI/UX Designer
@@ -99,31 +99,31 @@ mindmap
       Security Expert
 \`\`\`
 
-## ⏱️ Timeline การพัฒนา
+## ⏱️ Development Timeline
 
-แผนการพัฒนาในไตรมาสที่ 2 ปี 2025
+Development plan for Q2 2025
 
 \`\`\`mermaid
 gantt
-    title ไทม์ไลน์การพัฒนา Q2/2025
+    title Development Timeline Q2/2025
     dateFormat  YYYY-MM-DD
-    section ระบบสมาชิก
-    ออกแบบ          :done, des1, 2025-04-01, 2025-04-10
-    พัฒนา Frontend  :active, dev1, 2025-04-11, 15d
-    พัฒนา Backend   :dev2, 2025-04-11, 20d
-    ทดสอบ          :test1, 2025-05-01, 10d
+    section Membership System
+    Design           :done, des1, 2025-04-01, 2025-04-10
+    Frontend Dev     :active, dev1, 2025-04-11, 15d
+    Backend Dev      :dev2, 2025-04-11, 20d
+    Testing          :test1, 2025-05-01, 10d
 
-    section ระบบชำระเงิน
-    ออกแบบ          :des2, 2025-04-15, 10d
-    พัฒนา           :dev3, 2025-04-25, 25d
-    ทดสอบ          :test2, after dev3, 10d
+    section Payment System
+    Design           :des2, 2025-04-15, 10d
+    Development      :dev3, 2025-04-25, 25d
+    Testing          :test2, after dev3, 10d
 
-    section ระบบจัดส่ง
-    ออกแบบ          :des3, 2025-05-10, 10d
-    พัฒนา           :dev4, 2025-05-20, 20d
+    section Shipping System
+    Design           :des3, 2025-05-10, 10d
+    Development      :dev4, 2025-05-20, 20d
 \`\`\`
 
-## 🔷 ความสัมพันธ์ระหว่างส่วนประกอบ
+## 🔷 Entity Relationships
 
 \`\`\`mermaid
 erDiagram
@@ -164,5 +164,5 @@ erDiagram
 
 ---
 
-*เอกสารนี้สร้างด้วย Markdown Preview พร้อมระบบแสดงผล Mermaid Diagrams*`,
+*This document was created with Markdown Preview with Mermaid Diagrams rendering*`,
 };

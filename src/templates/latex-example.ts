@@ -1,4 +1,4 @@
-import type { Template } from '../types.js';
+import type { Template } from "../types.js";
 
 // Template: LaTeX Examples
 export const template: Template = {
@@ -6,43 +6,43 @@ export const template: Template = {
   icon: "🧮",
   category: "example",
   name: "LaTeX Examples",
-  description: "ตัวอย่างสูตรคณิตศาสตร์ LaTeX ที่รองรับด้วย KaTeX",
+  description: "LaTeX math formula examples powered by KaTeX",
   content: `# 🧮 LaTeX Math Examples
 
-เอกสารนี้รวบรวมตัวอย่างสูตรคณิตศาสตร์ที่เขียนด้วย LaTeX
+A collection of math formula examples written in LaTeX.
 
 ---
 
-## 🔤 ตัวอักษรกรีก
+## 🔤 Greek Letters
 
-### ตัวอักษรพื้นฐาน
-- อัลฟา: $\\alpha, \\beta, \\gamma, \\delta$
-- เอปไซลอน: $\\epsilon, \\zeta, \\eta, \\theta, \\iota, \\kappa, \\lambda, \\mu$
-- อื่นๆ: $\\pi, \\rho, \\sigma, \\tau, \\phi, \\psi, \\omega$
+### Basic Letters
+- Alpha group: $\\alpha, \\beta, \\gamma, \\delta$
+- Epsilon group: $\\epsilon, \\zeta, \\eta, \\theta, \\iota, \\kappa, \\lambda, \\mu$
+- Others: $\\pi, \\rho, \\sigma, \\tau, \\phi, \\psi, \\omega$
 
-### ตัวอักษรตัวพิมพ์ใหญ่
+### Uppercase Letters
 - $\\Gamma, \\Delta, \\Theta, \\Lambda$
 - $\\Phi, \\Psi, \\Omega$
 
-### ตัวดำเนินการ
-- บวก ลบ คูณ หาร: $+, -, \\times, \\div$
-- ยกกำลัง: $x^2, x^3, x^{10}$
-- รากที่สอง: $\\sqrt{x}, \\sqrt[3]{x}$
-- ไม่เท่ากับ: $\\neq$
-- มากกว่า น้อยกว่า: $>, <, \\geq, \\leq$
-- ประมาณบางส่วน: $\\approx$
-- อยู่ใน: $\\in$
-- ไม่อยู่ใน: $\\notin$
+### Operators
+- Add, subtract, multiply, divide: $+, -, \\times, \\div$
+- Exponents: $x^2, x^3, x^{10}$
+- Square root: $\\sqrt{x}, \\sqrt[3]{x}$
+- Not equal: $\\neq$
+- Greater/less than: $>, <, \\geq, \\leq$
+- Approximately: $\\approx$
+- Element of: $\\in$
+- Not element of: $\\notin$
 
 ---
 
-## 📐 พีชคณิต
+## 📐 Algebra
 
-### สมการพื้นฐาน
+### Basic Equations
 
-กฎของ distributive: $a(b + c) = ab + ac$
+Distributive law: $a(b + c) = ab + ac$
 
-สูตรการคูณ: $(a + b)^2 = a^2 + 2ab + b^2$
+Binomial expansion: $(a + b)^2 = a^2 + 2ab + b^2$
 
 **Difference of Squares:**
 
@@ -58,57 +58,57 @@ $$a^3 + b^3 = (a + b)(a^2 - ab + b^2)$$
 
 ### Limits
 
-Limit ของ sin(x)/x เมื่อ x แนวนอน 0:
+Limit of sin(x)/x as x approaches 0:
 
 $$\\lim_{x \\to 0} \\frac{\\sin x}{x} = 1$$
 
 ### Derivatives
 
-กฎลูกโซ่ (Chain Rule):
+Chain Rule:
 
 $$\\frac{d}{dx}[f(g(x))] = f'(g(x)) \\cdot g'(x)$$
 
-สูตรผลคูณ (Product Rule):
+Product Rule:
 
 $$\\frac{d}{dx}[uv] = u'v + uv'$$
 
 ### Integrals
 
-Integral ของ $e^x$:
+Integral of $e^x$:
 
 $$\\int e^x dx = e^x + C$$
 
-Integral แบบ definite:
+Definite integral:
 
 $$\\int_{0}^{1} x^2 dx = \\left[ \\frac{x^3}{3} \\right]_0^1 = \\frac{1}{3}$$
 
 ---
 
-## 🔢 อนุกรมและผลรวม
+## 🔢 Series and Summation
 
-### ผลรวมอนุกรมจำกัด
+### Finite Series
 
-ผลรวมของจำนวนเต็ม 1 ถึง n:
+Sum of integers from 1 to n:
 
 $$\\sum_{i=1}^{n} i = \\frac{n(n+1)}{2}$$
 
-ผลรวมของจำนวนเต็มยกกำลังสอง:
+Sum of squared integers:
 
 $$\\sum_{i=1}^{n} i^2 = \\frac{n(n+1)(2n+1)}{6}$$
 
-### อนุกรมเรขุค
+### Geometric Series
 
-อนุกรมเรขุค: $1 + r + r^2 + r^3 + \\cdots = \\sum_{k=0}^{\\infty} r^k$
+Geometric series: $1 + r + r^2 + r^3 + \\cdots = \\sum_{k=0}^{\\infty} r^k$
 
-ผลรวม (เมื่อ $|r| < 1$):
+Sum (when $|r| < 1$):
 
 $$\\sum_{k=0}^{\\infty} r^k = \\frac{1}{1-r}$$
 
 ---
 
-## 📊 เมทริกซ์
+## 📊 Matrices
 
-### เมทริกซ์พื้นฐาน
+### Basic Matrix
 
 $$
 \\begin{pmatrix}
@@ -117,7 +117,7 @@ $$
 \\end{pmatrix}
 $$
 
-### การคูณเมทริกซ์
+### Matrix Multiplication
 
 $$
 \\begin{pmatrix}
@@ -137,59 +137,59 @@ $$
 
 ---
 
-## 🔬 สถิติและความน่าจะเป็น
+## 🔬 Statistics and Probability
 
-### ค่าเฉลี่ย
-ค่าเฉลี่ยเลขคณิต: $\\bar{x} = \\frac{1}{n}\\sum_{i=1}^{n} x_i$
+### Mean
+Arithmetic mean: $\\bar{x} = \\frac{1}{n}\\sum_{i=1}^{n} x_i$
 
-### ส่วนเบี่ยงเบี่ยม
+### Variance
 Variance: $\\sigma^2 = \\frac{1}{n}\\sum_{i=1}^{n} (x_i - \\mu)^2$
 
-### การแจกแจงแบบปกติ (Normal Distribution)
+### Normal Distribution
 
 $$f(x) = \\frac{1}{\\sigma\\sqrt{2\\pi}} e^{-\\frac{1}{2}\\left(\\frac{x-\\mu}{\\sigma}\\right)^2}$$
 
 ---
 
-## 🔷 ตรรกศาสตร์
+## 🔷 Trigonometry
 
-### ตรีโกณมิติพื้นฐาน
+### Fundamental Identities
 
-สูตรของออยเลอร์ (Euler's Formula):
+Euler's Formula:
 
 $$e^{i\\pi} + 1 = 0$$
 
-อัตลักษณ์ของโคไซน์:
+Pythagorean Identity:
 
 $$\\cos^2 x + \\sin^2 x = 1$$
 
 ---
 
-## 📐 เรขาคณิต
+## 📐 Geometry
 
-### พื้นที่
+### Area
 
-สี่เหลี่ยมผืนผ้า: $A = w \\times h$
+Rectangle: $A = w \\times h$
 
-วงกลม: $A = \\pi r^2$
+Circle: $A = \\pi r^2$
 
-สามเหลี่ยม: $A = \\frac{\\sqrt{3}}{4}s^2$
+Equilateral triangle: $A = \\frac{\\sqrt{3}}{4}s^2$
 
-### ปริมาตร
+### Volume
 
-ทรงกระบอก: $V = \\pi r^2 h$
+Cylinder: $V = \\pi r^2 h$
 
-ทรงกลม: $V = \\frac{4}{3}\\pi r^3$
+Sphere: $V = \\frac{4}{3}\\pi r^3$
 
 ---
 
-## การใช้งาน
+## Usage
 
 ### Inline Math
-ใช้เครื่องหมายดอลลาร์เดียว: $x^2 + y^2 = r^2$
+Use single dollar signs: $x^2 + y^2 = r^2$
 
 ### Display Math
-ใช้เครื่องหมายดอลลาร์สองอัน:
+Use double dollar signs:
 
 $$\\frac{-b \\pm \\sqrt{b^2 - 4ac}}{2a}$$
 
@@ -197,11 +197,11 @@ $$\\frac{-b \\pm \\sqrt{b^2 - 4ac}}{2a}$$
 
 ## 💡 Tips
 
-- ใช้ backslash สำหรับขึ้นบรรทัดใหม่ในสมการ
-- ใช้ {} สำหรับกลุ่มตัวอักษร
-- สามารถใช้ \\( ... \\) แทน $ สำหรับ inline math
-- สามารถใช้ \\[ ... \\] แทน $$ สำหรับ display math
+- Use backslash for special commands in equations
+- Use {} for grouping characters
+- You can use \\( ... \\) instead of $ for inline math
+- You can use \\[ ... \\] instead of $$ for display math
 
-สนุกกับการเขียนสูตรคณิตศาสตร์! 🧮
+Have fun writing math formulas! 🧮
 `,
 };
