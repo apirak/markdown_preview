@@ -6,6 +6,7 @@ import mermaid from "mermaid";
 import { createIcons, icons } from "lucide";
 import html2canvas from "html2canvas";
 import { jsPDF } from "jspdf";
+import katex from "katex";
 import { initHelpPanel } from "./help-panel.js";
 import { initSiteLink } from "./components/site-link.js";
 import { showToast } from "./toast.js";
@@ -97,11 +98,69 @@ let mermaidCounter = 0;
 
 // --- ฟังก์ชันอัปเดต Preview สดๆ ---
 async function updatePreview() {
-  const markdownText = easymde.value();
+  let markdownText = easymde.value();
+
+  // --- ประมวลผล LaTeX Math ก่อน (เพื่อป้องกันการ render ผิด) ---
+  const mathBlocks = [];
+  const mathBlockPlaceholder = (index) => `___MATH_BLOCK_${index}___`;
+
+  // แทนที่ display math ($$...$$) ด้วย placeholder
+  markdownText = markdownText.replace(/\$\$([\s\S]+?)\$\$/g, (_match, math) => {
+    mathBlocks.push({ math: math.trim(), displayMode: true });
+    return mathBlockPlaceholder(mathBlocks.length - 1);
+  });
+
+  // แทนที่ inline math ($...$) ด้วย placeholder
+  markdownText = markdownText.replace(/\$([^$\n]+?)\$/g, (_match, math) => {
+    mathBlocks.push({ math: math.trim(), displayMode: false });
+    return mathBlockPlaceholder(mathBlocks.length - 1);
+  });
+
+  // --- Render Markdown ด้วย Marked.js ---
   const html = marked.parse(markdownText);
   preview.innerHTML = html;
 
-  // Render Mermaid diagrams ถ้ามี
+  // --- แทนที่ placeholder ด้วย KaTeX rendered math ---
+  for (let i = 0; i < mathBlocks.length; i++) {
+    const { math, displayMode } = mathBlocks[i];
+    const placeholder = mathBlockPlaceholder(i);
+
+    // ค้นหาและแทนที่ text nodes ที่มี placeholder
+    const walker = document.createTreeWalker(
+      preview,
+      NodeFilter.SHOW_TEXT,
+      null
+    );
+
+    let node;
+    while ((node = walker.nextNode())) {
+      if (node.textContent.includes(placeholder)) {
+        try {
+          const mathHtml = katex.renderToString(math, {
+            displayMode,
+            throwOnError: false,
+          });
+          const span = document.createElement(displayMode ? "div" : "span");
+          span.className = displayMode ? "katex-display" : "katex-inline";
+          span.innerHTML = mathHtml;
+          node.parentNode.replaceChild(span, node);
+        } catch (e) {
+          showToast(`LaTeX Error: ${e.message}`, {
+            type: "error",
+            duration: 5000,
+          });
+          // แสดง raw math แทน
+          const span = document.createElement(displayMode ? "div" : "span");
+          span.className = "text-red-500";
+          span.textContent = `${displayMode ? "$$" : "$"}${math}${displayMode ? "$$" : "$"}`;
+          node.parentNode.replaceChild(span, node);
+        }
+        break;
+      }
+    }
+  }
+
+  // --- Render Mermaid diagrams ถ้ามี ---
   const mermaidDivs = preview.querySelectorAll(".mermaid");
   if (mermaidDivs.length > 0) {
     for (const div of mermaidDivs) {
@@ -236,7 +295,7 @@ async function downloadHTML() {
     const previewContent = document.getElementById("preview").innerHTML;
     const title = easymde.value().split("\n")[0].replace(/^#+\s*/, "") || "markdown-export";
 
-    // สร้างไฟล์ HTML เต็มรูปแบบพร้อม Tailwind CDN, Font และ custom styles
+    // สร้างไฟล์ HTML เต็มรูปแบบพร้อม Tailwind CDN, KaTeX, Font และ custom styles
     const htmlContent = `<!DOCTYPE html>
 <html lang="th">
 <head>
@@ -244,6 +303,7 @@ async function downloadHTML() {
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>${title}</title>
   <script src="https://cdn.tailwindcss.com?plugins=typography"><\/script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" integrity="sha384-n8MVd4RsNIU0KOVEMQNogdwFxk+ZbMoH5BnzJG8M CIWzhBZfWFrfMdXRXCrYcRIou" crossorigin="anonymous">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Sarabun:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800&display=swap" rel="stylesheet">
@@ -269,6 +329,16 @@ async function downloadHTML() {
     h4 { font-size: var(--heading-h4); }
     h5 { font-size: var(--heading-h5); }
     h6 { font-size: var(--heading-h6); }
+    /* KaTeX Display */
+    .katex-display {
+      margin: 1em 0;
+      padding: 0.5em 0;
+      overflow-x: auto;
+      overflow-y: hidden;
+    }
+    .katex-inline {
+      padding: 0 0.2em;
+    }
     /* Task list: hide bullet */
     li:has(input[type="checkbox"]) {
       list-style-type: none;

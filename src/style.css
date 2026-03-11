@@ -50,6 +50,18 @@ body {
 .CodeMirror .cm-header-5 { font-size: var(--heading-h5) !important; }
 .CodeMirror .cm-header-6 { font-size: var(--heading-h6) !important; }
 
+/* --- KaTeX Math Display --- */
+.katex-display {
+  margin: 1em 0;
+  padding: 0.5em 0;
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+
+.katex-inline {
+  padding: 0 0.2em;
+}
+
 /* --- EasyMDE Overrides --- */
 
 /* ให้ EasyMDE container เต็มพื้นที่ editor section */

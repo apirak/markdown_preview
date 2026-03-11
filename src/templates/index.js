@@ -3,6 +3,8 @@ export { template as thaiPractice } from "./thai-practice.js";
 export { template as englishPractice } from "./english-practice.js";
 export { template as markdownExample } from "./markdown-example.js";
 export { template as mermaidExample } from "./mermaid-example.js";
+export { template as svgExample } from "./svg-example.js";
+export { template as latexExample } from "./latex-example.js";
 
 // Template list with metadata
 export const templates = [
@@ -26,6 +28,16 @@ export const templates = [
     icon: "📊",
     category: "example",
   },
+  {
+    id: "svg-example",
+    icon: "🎨",
+    category: "example",
+  },
+  {
+    id: "latex-example",
+    icon: "🧮",
+    category: "example",
+  },
 ];
 
 // Get template by ID
@@ -43,6 +55,12 @@ export async function getTemplate(id) {
     case "mermaid-example":
       const { template: mermaidExample } = await import("./mermaid-example.js");
       return mermaidExample;
+    case "svg-example":
+      const { template: svgExample } = await import("./svg-example.js");
+      return svgExample;
+    case "latex-example":
+      const { template: latexExample } = await import("./latex-example.js");
+      return latexExample;
     default:
       return null;
   }
