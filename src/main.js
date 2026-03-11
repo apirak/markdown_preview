@@ -4,6 +4,8 @@ import EasyMDE from "easymde";
 import { marked, Renderer } from "marked";
 import mermaid from "mermaid";
 import { createIcons, icons } from "lucide";
+import html2canvas from "html2canvas";
+import { jsPDF } from "jspdf";
 import { defaultMarkdown } from "./default-content.js";
 import { initHelpPanel } from "./help-panel.js";
 import { initSiteLink } from "./components/site-link.js";
@@ -223,6 +225,218 @@ function togglePanel(panelName) {
   updatePanelVisibility();
 }
 
+// --- Download/Export Functions ---
+
+// ฟังก์ชันดาวน์โหลดเป็น HTML
+async function downloadHTML() {
+  try {
+    const previewContent = document.getElementById("preview").innerHTML;
+    const title = easymde.value().split("\n")[0].replace(/^#+\s*/, "") || "markdown-export";
+
+    // สร้างไฟล์ HTML เต็มรูปแบบพร้อม Tailwind CDN, Font และ custom styles
+    const htmlContent = `<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>${title}</title>
+  <script src="https://cdn.tailwindcss.com?plugins=typography"><\/script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Sarabun:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: "Sarabun", sans-serif;
+      padding: 2rem;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+    /* Heading sizes */
+    :root {
+      --heading-h1: 1.5em;
+      --heading-h2: 1.3em;
+      --heading-h3: 1.15em;
+      --heading-h4: 1.05em;
+      --heading-h5: 0.95em;
+      --heading-h6: 0.9em;
+    }
+    h1 { font-size: var(--heading-h1); }
+    h2 { font-size: var(--heading-h2); }
+    h3 { font-size: var(--heading-h3); }
+    h4 { font-size: var(--heading-h4); }
+    h5 { font-size: var(--heading-h5); }
+    h6 { font-size: var(--heading-h6); }
+    /* Task list: hide bullet */
+    li:has(input[type="checkbox"]) {
+      list-style-type: none;
+      padding-left: 0;
+    }
+  </style>
+</head>
+<body class="bg-slate-50">
+  <div class="prose prose-slate prose-blue max-w-none">
+    ${previewContent}
+  </div>
+</body>
+</html>`;
+
+    // สร้าง Blob และดาวน์โหลด
+    const blob = new Blob([htmlContent], { type: "text/html" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `${title}.html`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+
+    showToast("ดาวน์โหลด HTML สำเร็จ", { type: "success" });
+  } catch (error) {
+    showToast("ดาวน์โหลด HTML ไม่สำเร็จ: " + error.message, { type: "error" });
+  }
+}
+
+// ฟังก์ชันดาวน์โหลดเป็น PDF
+async function downloadPDF() {
+  try {
+    showToast("กำลังสร้าง PDF กรุณารอสักครู่...", { type: "info", duration: 5000 });
+
+    // รอให้ fonts โหลดเสร็จก่อน
+    await document.fonts.ready;
+
+    // คัดลอก preview element เพื่อใช้ในการ render โดยไม่กระทบกับหน้าจอจริง
+    const originalElement = document.getElementById("preview");
+    const clonedElement = originalElement.cloneNode(true);
+
+    // สร้าง temporary container เพื่อ render
+    const container = document.createElement("div");
+    container.style.position = "absolute";
+    container.style.left = "-9999px";
+    container.style.top = "0";
+    container.style.width = originalElement.offsetWidth + "px";
+    container.style.padding = "2rem";
+    container.style.background = "#ffffff";
+    container.appendChild(clonedElement);
+    document.body.appendChild(container);
+
+    try {
+      const canvas = await html2canvas(clonedElement, {
+        scale: 2,
+        useCORS: true,
+        logging: false,
+        backgroundColor: "#ffffff",
+        allowTaint: true,
+        windowWidth: originalElement.offsetWidth,
+        windowHeight: clonedElement.scrollHeight,
+      });
+
+      const imgData = canvas.toDataURL("image/png", 1.0);
+      const title = easymde.value().split("\n")[0].replace(/^#+\s*/, "") || "markdown-export";
+
+      // คำนวณขนาด PDF (ให้พอดี A4 โดยรักษาสัดส่วน)
+      const imgWidth = canvas.width;
+      const imgHeight = canvas.height;
+      const pdfWidth = 595.28; // A4 width in points
+      const pdfHeight = (imgHeight * pdfWidth) / imgWidth;
+
+      // สร้าง PDF
+      const pdf = new jsPDF({
+        orientation: pdfHeight > pdfWidth ? "portrait" : "landscape",
+        unit: "pt",
+        format: [pdfWidth, pdfHeight],
+      });
+
+      pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight);
+      pdf.save(`${title}.pdf`);
+
+      showToast("ดาวน์โหลด PDF สำเร็จ", { type: "success" });
+    } finally {
+      // ลบ temporary container
+      document.body.removeChild(container);
+    }
+  } catch (error) {
+    console.error("PDF Error:", error);
+    showToast("ดาวน์โหลด PDF ไม่สำเร็จ: " + error.message, { type: "error" });
+  }
+}
+
+// ฟังก์ชันดาวน์โหลดเป็น PNG
+async function downloadPNG() {
+  try {
+    showToast("กำลังสร้างรูปภาพ กรุณารอสักครู่...", { type: "info", duration: 5000 });
+
+    // รอให้ fonts โหลดเสร็จก่อน
+    await document.fonts.ready;
+
+    // คัดลอก preview element เพื่อใช้ในการ render โดยไม่กระทบกับหน้าจอจริง
+    const originalElement = document.getElementById("preview");
+    const clonedElement = originalElement.cloneNode(true);
+
+    // สร้าง temporary container เพื่อ render
+    const container = document.createElement("div");
+    container.style.position = "absolute";
+    container.style.left = "-9999px";
+    container.style.top = "0";
+    container.style.width = originalElement.offsetWidth + "px";
+    container.style.padding = "2rem";
+    container.style.background = "#ffffff";
+    container.appendChild(clonedElement);
+    document.body.appendChild(container);
+
+    try {
+      const canvas = await html2canvas(clonedElement, {
+        scale: 2,
+        useCORS: true,
+        logging: false,
+        backgroundColor: "#ffffff",
+        allowTaint: true,
+        windowWidth: originalElement.offsetWidth,
+        windowHeight: clonedElement.scrollHeight,
+      });
+
+      const title = easymde.value().split("\n")[0].replace(/^#+\s*/, "") || "markdown-export";
+
+      // ดาวน์โหลดเป็น PNG
+      canvas.toBlob((blob) => {
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = `${title}.png`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+
+        showToast("ดาวน์โหลด PNG สำเร็จ", { type: "success" });
+      }, "image/png", 1.0);
+    } finally {
+      // ลบ temporary container
+      document.body.removeChild(container);
+    }
+  } catch (error) {
+    console.error("PNG Error:", error);
+    showToast("ดาวน์โหลด PNG ไม่สำเร็จ: " + error.message, { type: "error" });
+  }
+}
+
+// ฟังก์ชันจัดการดาวน์โหลดตาม format
+function handleDownload(format) {
+  switch (format) {
+    case "html":
+      downloadHTML();
+      break;
+    case "pdf":
+      downloadPDF();
+      break;
+    case "png":
+      downloadPNG();
+      break;
+    default:
+      showToast("รูปแบบที่เลือกไม่ถูกต้อง", { type: "error" });
+  }
+}
+
 // --- Initialize ---
 createIcons({ icons });
 initSiteLink();
@@ -258,3 +472,8 @@ document
 document
   .querySelector("[data-action='copy']")
   .addEventListener("click", copyMarkdown);
+
+// Download buttons
+document.querySelectorAll("[data-action='download']").forEach((btn) => {
+  btn.addEventListener("click", () => handleDownload(btn.dataset.format));
+});

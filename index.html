@@ -159,13 +159,40 @@
           <div class="flex items-center gap-2">
             <i data-lucide="eye" class="w-4 h-4"></i> Live Preview
           </div>
-          <button
-            data-action="close-panel"
-            data-panel="preview"
-            class="p-1 hover:bg-slate-200 rounded transition-colors"
-          >
-            <i data-lucide="x" class="w-4 h-4 text-slate-400"></i>
-          </button>
+          <div class="flex items-center gap-2">
+            <button
+              data-action="download"
+              data-format="html"
+              class="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-slate-500 hover:text-slate-700 hover:bg-slate-200 rounded transition-colors duration-200"
+              title="ดาวน์โหลดเป็น HTML"
+            >
+              <i data-lucide="file-code" class="w-3.5 h-3.5"></i> HTML
+            </button>
+            <button
+              data-action="download"
+              data-format="pdf"
+              class="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-slate-500 hover:text-slate-700 hover:bg-slate-200 rounded transition-colors duration-200"
+              title="ดาวน์โหลดเป็น PDF"
+            >
+              <i data-lucide="file-text" class="w-3.5 h-3.5"></i> PDF
+            </button>
+            <button
+              data-action="download"
+              data-format="png"
+              class="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-slate-500 hover:text-slate-700 hover:bg-slate-200 rounded transition-colors duration-200"
+              title="ดาวน์โหลดเป็น PNG"
+            >
+              <i data-lucide="image" class="w-3.5 h-3.5"></i> PNG
+            </button>
+            <div class="w-px h-4 bg-slate-200"></div>
+            <button
+              data-action="close-panel"
+              data-panel="preview"
+              class="p-1 hover:bg-slate-200 rounded transition-colors"
+            >
+              <i data-lucide="x" class="w-4 h-4 text-slate-400"></i>
+            </button>
+          </div>
         </div>
         <div
           id="preview"
