@@ -1,14 +1,15 @@
 import { createIcons, icons } from "lucide";
+import type { ToastOptions } from './types.js';
 
 // Toast container element
-let toastContainer = null;
+let toastContainer: HTMLElement | null = null;
 
 // Track active toasts by category for replacement
 // Categories: 'mermaid-error', or message-based for others
-const activeToasts = new Map();
+const activeToasts = new Map<string, HTMLElement>();
 
 // Ensure container exists
-function ensureContainer() {
+function ensureContainer(): HTMLElement {
   if (!toastContainer) {
     toastContainer = document.getElementById("toast-container");
     if (!toastContainer) {
@@ -22,8 +23,8 @@ function ensureContainer() {
 }
 
 // Get icon name based on toast type
-function getIconForType(type) {
-  const iconMap = {
+function getIconForType(type: string): string {
+  const iconMap: Record<string, string> = {
     error: "alert-circle",
     warning: "alert-triangle",
     success: "check-circle",
@@ -33,10 +34,9 @@ function getIconForType(type) {
 }
 
 // Create a toast element
-function createToast(message, options = {}) {
+function createToast(message: string, options: ToastOptions = {}): HTMLElement {
   const {
     type = "info",
-    duration = 5000,
     dismissible = true,
   } = options;
 
@@ -76,7 +76,7 @@ function createToast(message, options = {}) {
 }
 
 // Add toast to container with animation
-function addToast(toast) {
+function addToast(toast: HTMLElement): void {
   const container = ensureContainer();
   container.appendChild(toast);
 
@@ -90,7 +90,7 @@ function addToast(toast) {
 }
 
 // Remove toast with animation
-function removeToast(toast) {
+function removeToast(toast: HTMLElement): void {
   const category = toast.dataset.category;
   if (category) {
     activeToasts.delete(category);
@@ -107,7 +107,7 @@ function removeToast(toast) {
 }
 
 // Main API: Show a toast notification
-export function showToast(message, options = {}) {
+export function showToast(message: string, options: ToastOptions = {}): HTMLElement {
   const {
     type = "info",
     duration = 5000,

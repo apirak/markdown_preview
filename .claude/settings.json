@@ -3,7 +3,10 @@
     "allow": [
       "Bash(pnpm add:*)",
       "Bash(npm run:*)",
-      "Bash(pnpm exec:*)"
+      "Bash(pnpm exec:*)",
+      "Bash(ls /Users/apirak/workspace/markdown_preview/src/**/*.js)",
+      "Bash(pnpm typecheck:*)",
+      "Bash(pnpm typecheck:classic)"
     ]
   }
 }

@@ -3,7 +3,7 @@ import { createIcons, icons } from "lucide";
 /**
  * สร้าง HTML เนื้อหาคู่มือ Markdown สำหรับ Help Panel
  */
-export function createHelpContent() {
+export function createHelpContent(): string {
   return `
     <div class="p-5 text-md text-slate-700 max-w-full mx-auto">
 
@@ -176,7 +176,7 @@ export function createHelpContent() {
 /**
  * สร้างเนื้อหาใน Help Panel
  */
-export function initHelpPanel() {
+export function initHelpPanel(): void {
   const helpContent = document.getElementById("help-content");
   if (helpContent) {
     helpContent.innerHTML = createHelpContent();

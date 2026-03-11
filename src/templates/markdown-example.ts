@@ -1,5 +1,7 @@
+import type { Template } from '../types.js';
+
 // Template: Markdown Example
-export const template = {
+export const template: Template = {
   id: "markdown-example",
   icon: "📝",
   category: "example",

@@ -12,14 +12,15 @@ import { initSiteLink } from "./components/site-link.js";
 import { showToast } from "./toast.js";
 import { initTemplateModal, openModal } from "./template-modal.js";
 import { template as thaiPractice } from "./templates/thai-practice.js";
+import type { PanelState, PanelName, DownloadFormat } from "./types.js";
 
 // --- DOM Elements ---
-const textarea = document.getElementById("editor");
-const preview = document.getElementById("preview");
-const copyBtn = document.getElementById("copyBtn");
+const textarea = document.getElementById("editor") as HTMLTextAreaElement;
+const preview = document.getElementById("preview") as HTMLDivElement;
+const copyBtn = document.getElementById("copyBtn") as HTMLButtonElement;
 const toolbarToggleBtn = document.querySelector(
   "[data-action='toggle-toolbar']",
-);
+) as HTMLButtonElement;
 
 // --- Mermaid Setup ---
 mermaid.initialize({
@@ -33,11 +34,11 @@ mermaid.initialize({
 // สร้าง Custom Renderer สำหรับ Marked.js เพื่อดักจับ code block ที่เป็น mermaid
 const renderer = new Renderer();
 const originalCodeRenderer = renderer.code.bind(renderer);
-renderer.code = function ({ text, lang }) {
-  if (lang === "mermaid") {
-    return `<div class="mermaid">${text}</div>`;
+renderer.code = function (code: { text: string; lang?: string; type: "code"; raw: string }): string {
+  if (code.lang === "mermaid") {
+    return `<div class="mermaid">${code.text}</div>`;
   }
-  return originalCodeRenderer({ text, lang });
+  return originalCodeRenderer(code);
 };
 
 // ตั้งค่า Marked.js ให้รองรับการขึ้นบรรทัดใหม่แบบปกติ
@@ -73,11 +74,11 @@ const easymde = new EasyMDE({
 // --- Toolbar Toggle ---
 let toolbarVisible = false;
 
-function setToolbarVisibility(visible) {
+function setToolbarVisibility(visible: boolean): void {
   toolbarVisible = visible;
   const editorWrapper = easymde.codemirror
     .getWrapperElement()
-    .closest(".EasyMDEContainer");
+    .closest(".EasyMDEContainer") as HTMLElement;
   if (visible) {
     editorWrapper.classList.remove("toolbar-hidden");
     toolbarToggleBtn.classList.add("bg-blue-100", "text-blue-700");
@@ -89,7 +90,7 @@ function setToolbarVisibility(visible) {
   }
 }
 
-function toggleToolbar() {
+function toggleToolbar(): void {
   setToolbarVisibility(!toolbarVisible);
 }
 
@@ -97,12 +98,16 @@ function toggleToolbar() {
 let mermaidCounter = 0;
 
 // --- ฟังก์ชันอัปเดต Preview สดๆ ---
-async function updatePreview() {
+async function updatePreview(): Promise<void> {
   let markdownText = easymde.value();
 
   // --- ประมวลผล LaTeX Math ก่อน (เพื่อป้องกันการ render ผิด) ---
-  const mathBlocks = [];
-  const mathBlockPlaceholder = (index) => `___MATH_BLOCK_${index}___`;
+  interface MathBlock {
+    math: string;
+    displayMode: boolean;
+  }
+  const mathBlocks: MathBlock[] = [];
+  const mathBlockPlaceholder = (index: number) => `___MATH_BLOCK_${index}___`;
 
   // แทนที่ display math ($$...$$) ด้วย placeholder
   markdownText = markdownText.replace(/\$\$([\s\S]+?)\$\$/g, (_match, math) => {
@@ -117,7 +122,7 @@ async function updatePreview() {
   });
 
   // --- Render Markdown ด้วย Marked.js ---
-  const html = marked.parse(markdownText);
+  const html = await marked.parse(markdownText);
   preview.innerHTML = html;
 
   // --- แทนที่ placeholder ด้วย KaTeX rendered math ---
@@ -132,9 +137,9 @@ async function updatePreview() {
       null
     );
 
-    let node;
+    let node: Node | null;
     while ((node = walker.nextNode())) {
-      if (node.textContent.includes(placeholder)) {
+      if (node.textContent && node.textContent.includes(placeholder)) {
         try {
           const mathHtml = katex.renderToString(math, {
             displayMode,
@@ -143,9 +148,10 @@ async function updatePreview() {
           const span = document.createElement(displayMode ? "div" : "span");
           span.className = displayMode ? "katex-display" : "katex-inline";
           span.innerHTML = mathHtml;
-          node.parentNode.replaceChild(span, node);
+          node.parentNode?.replaceChild(span, node);
         } catch (e) {
-          showToast(`LaTeX Error: ${e.message}`, {
+          const error = e as Error;
+          showToast(`LaTeX Error: ${error.message}`, {
             type: "error",
             duration: 5000,
           });
@@ -153,7 +159,7 @@ async function updatePreview() {
           const span = document.createElement(displayMode ? "div" : "span");
           span.className = "text-red-500";
           span.textContent = `${displayMode ? "$$" : "$"}${math}${displayMode ? "$$" : "$"}`;
-          node.parentNode.replaceChild(span, node);
+          node.parentNode?.replaceChild(span, node);
         }
         break;
       }
@@ -165,13 +171,14 @@ async function updatePreview() {
   if (mermaidDivs.length > 0) {
     for (const div of mermaidDivs) {
       const id = `mermaid-${mermaidCounter++}`;
-      const graphDefinition = div.textContent;
+      const graphDefinition = div.textContent || "";
       try {
         const { svg } = await mermaid.render(id, graphDefinition);
         div.innerHTML = svg;
       } catch (e) {
         // Mermaid error - แสดง toast และเว้นว่างใน preview
-        showToast(`Mermaid Error: ${e.message}`, {
+        const error = e as Error;
+        showToast(`Mermaid Error: ${error.message}`, {
           type: "error",
           duration: 8000,
         });
@@ -182,7 +189,7 @@ async function updatePreview() {
 }
 
 // --- ฟังก์ชันรีเซ็ตกลับไปค่าเริ่มต้น ---
-function resetToDefault() {
+function resetToDefault(): void {
   openModal((content) => {
     easymde.value(content);
     updatePreview();
@@ -190,7 +197,7 @@ function resetToDefault() {
 }
 
 // --- ฟังก์ชันคัดลอก Markdown (ใช้ Clipboard API แทน execCommand ที่ deprecated) ---
-async function copyMarkdown() {
+async function copyMarkdown(): Promise<void> {
   try {
     await navigator.clipboard.writeText(easymde.value());
   } catch {
@@ -216,29 +223,29 @@ async function copyMarkdown() {
 }
 
 // --- Panel Toggle ---
-const panelState = { help: false, editor: true, preview: true };
+const panelState: PanelState = { help: false, editor: true, preview: true };
 
-const panelElements = {
-  help: document.getElementById("help-panel"),
-  editor: document.getElementById("editor-panel"),
-  preview: document.getElementById("preview-panel"),
+const panelElements: Record<PanelName, HTMLElement> = {
+  help: document.getElementById("help-panel") as HTMLElement,
+  editor: document.getElementById("editor-panel") as HTMLElement,
+  preview: document.getElementById("preview-panel") as HTMLElement,
 };
 
-function getToggleBtn(panelName) {
+function getToggleBtn(panelName: PanelName): HTMLButtonElement {
   return document.querySelector(
     `[data-action="toggle-panel"][data-panel="${panelName}"]`,
-  );
+  ) as HTMLButtonElement;
 }
 
-function updatePanelVisibility() {
+function updatePanelVisibility(): void {
   const openCount = Object.values(panelState).filter(Boolean).length;
   const canClose = openCount > 1;
 
-  for (const [name, el] of Object.entries(panelElements)) {
+  for (const [name, el] of Object.entries(panelElements) as [PanelName, HTMLElement][]) {
     const btn = getToggleBtn(name);
     const closeBtn = document.querySelector(
       `[data-action="close-panel"][data-panel="${name}"]`,
-    );
+    ) as HTMLElement;
 
     if (panelState[name]) {
       el.classList.remove("hidden");
@@ -271,7 +278,7 @@ function updatePanelVisibility() {
   setTimeout(() => easymde.codemirror.refresh(), 50);
 }
 
-function togglePanel(panelName) {
+function togglePanel(panelName: PanelName): void {
   // ถ้าจะปิด ตรวจสอบว่าเหลืออย่างน้อย 1 panel
   if (panelState[panelName]) {
     const openCount = Object.values(panelState).filter(Boolean).length;
@@ -290,9 +297,9 @@ function togglePanel(panelName) {
 // --- Download/Export Functions ---
 
 // ฟังก์ชันดาวน์โหลดเป็น HTML
-async function downloadHTML() {
+async function downloadHTML(): Promise<void> {
   try {
-    const previewContent = document.getElementById("preview").innerHTML;
+    const previewContent = document.getElementById("preview")?.innerHTML || "";
     const title = easymde.value().split("\n")[0].replace(/^#+\s*/, "") || "markdown-export";
 
     // สร้างไฟล์ HTML เต็มรูปแบบพร้อม Tailwind CDN, KaTeX, Font และ custom styles
@@ -366,12 +373,13 @@ async function downloadHTML() {
 
     showToast("ดาวน์โหลด HTML สำเร็จ", { type: "success" });
   } catch (error) {
-    showToast("ดาวน์โหลด HTML ไม่สำเร็จ: " + error.message, { type: "error" });
+    const err = error as Error;
+    showToast("ดาวน์โหลด HTML ไม่สำเร็จ: " + err.message, { type: "error" });
   }
 }
 
 // ฟังก์ชันดาวน์โหลดเป็น PDF
-async function downloadPDF() {
+async function downloadPDF(): Promise<void> {
   try {
     showToast("กำลังสร้าง PDF กรุณารอสักครู่...", { type: "info", duration: 5000 });
 
@@ -379,8 +387,8 @@ async function downloadPDF() {
     await document.fonts.ready;
 
     // คัดลอก preview element เพื่อใช้ในการ render โดยไม่กระทบกับหน้าจอจริง
-    const originalElement = document.getElementById("preview");
-    const clonedElement = originalElement.cloneNode(true);
+    const originalElement = document.getElementById("preview") as HTMLElement;
+    const clonedElement = originalElement.cloneNode(true) as HTMLElement;
 
     // สร้าง temporary container เพื่อ render
     const container = document.createElement("div");
@@ -430,12 +438,13 @@ async function downloadPDF() {
     }
   } catch (error) {
     console.error("PDF Error:", error);
-    showToast("ดาวน์โหลด PDF ไม่สำเร็จ: " + error.message, { type: "error" });
+    const err = error as Error;
+    showToast("ดาวน์โหลด PDF ไม่สำเร็จ: " + err.message, { type: "error" });
   }
 }
 
 // ฟังก์ชันดาวน์โหลดเป็น PNG
-async function downloadPNG() {
+async function downloadPNG(): Promise<void> {
   try {
     showToast("กำลังสร้างรูปภาพ กรุณารอสักครู่...", { type: "info", duration: 5000 });
 
@@ -443,8 +452,8 @@ async function downloadPNG() {
     await document.fonts.ready;
 
     // คัดลอก preview element เพื่อใช้ในการ render โดยไม่กระทบกับหน้าจอจริง
-    const originalElement = document.getElementById("preview");
-    const clonedElement = originalElement.cloneNode(true);
+    const originalElement = document.getElementById("preview") as HTMLElement;
+    const clonedElement = originalElement.cloneNode(true) as HTMLElement;
 
     // สร้าง temporary container เพื่อ render
     const container = document.createElement("div");
@@ -472,16 +481,18 @@ async function downloadPNG() {
 
       // ดาวน์โหลดเป็น PNG
       canvas.toBlob((blob) => {
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement("a");
-        a.href = url;
-        a.download = `${title}.png`;
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        URL.revokeObjectURL(url);
+        if (blob) {
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement("a");
+          a.href = url;
+          a.download = `${title}.png`;
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+          URL.revokeObjectURL(url);
 
-        showToast("ดาวน์โหลด PNG สำเร็จ", { type: "success" });
+          showToast("ดาวน์โหลด PNG สำเร็จ", { type: "success" });
+        }
       }, "image/png", 1.0);
     } finally {
       // ลบ temporary container
@@ -489,12 +500,13 @@ async function downloadPNG() {
     }
   } catch (error) {
     console.error("PNG Error:", error);
-    showToast("ดาวน์โหลด PNG ไม่สำเร็จ: " + error.message, { type: "error" });
+    const err = error as Error;
+    showToast("ดาวน์โหลด PNG ไม่สำเร็จ: " + err.message, { type: "error" });
   }
 }
 
 // ฟังก์ชันจัดการดาวน์โหลดตาม format
-function handleDownload(format) {
+function handleDownload(format: DownloadFormat): void {
   switch (format) {
     case "html":
       downloadHTML();
@@ -532,22 +544,25 @@ toolbarToggleBtn.addEventListener("click", toggleToolbar);
 
 // Panel toggle buttons
 document.querySelectorAll("[data-action='toggle-panel']").forEach((btn) => {
-  btn.addEventListener("click", () => togglePanel(btn.dataset.panel));
+  const panelName = (btn as HTMLElement).dataset.panel as PanelName;
+  btn.addEventListener("click", () => togglePanel(panelName));
 });
 
 // Panel close (x) buttons
 document.querySelectorAll("[data-action='close-panel']").forEach((btn) => {
-  btn.addEventListener("click", () => togglePanel(btn.dataset.panel));
+  const panelName = (btn as HTMLElement).dataset.panel as PanelName;
+  btn.addEventListener("click", () => togglePanel(panelName));
 });
 
 document
   .querySelector("[data-action='reset']")
-  .addEventListener("click", resetToDefault);
+  ?.addEventListener("click", resetToDefault);
 document
   .querySelector("[data-action='copy']")
-  .addEventListener("click", copyMarkdown);
+  ?.addEventListener("click", copyMarkdown);
 
 // Download buttons
 document.querySelectorAll("[data-action='download']").forEach((btn) => {
-  btn.addEventListener("click", () => handleDownload(btn.dataset.format));
+  const format = (btn as HTMLElement).dataset.format as DownloadFormat;
+  btn.addEventListener("click", () => handleDownload(format));
 });

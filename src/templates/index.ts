@@ -1,4 +1,4 @@
-// Templates Index - Export all templates
+import type { Template } from '../types.js';
 import { template as thaiPractice } from "./thai-practice.js";
 import { template as englishPractice } from "./english-practice.js";
 import { template as markdownExample } from "./markdown-example.js";
@@ -7,7 +7,7 @@ import { template as svgExample } from "./svg-example.js";
 import { template as latexExample } from "./latex-example.js";
 
 // Template list with full template objects
-export const templates = [
+export const templates: Template[] = [
   thaiPractice,
   englishPractice,
   markdownExample,
@@ -17,6 +17,6 @@ export const templates = [
 ];
 
 // Get template by ID
-export async function getTemplate(id) {
+export async function getTemplate(id: string): Promise<Template | null> {
   return templates.find((t) => t.id === id) || null;
 }

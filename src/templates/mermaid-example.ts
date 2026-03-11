@@ -1,5 +1,7 @@
+import type { Template } from '../types.js';
+
 // Template: Mermaid Example
-export const template = {
+export const template: Template = {
   id: "mermaid-example",
   icon: "📊",
   category: "example",

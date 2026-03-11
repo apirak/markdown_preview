@@ -1,14 +1,15 @@
 // Template Modal Component
 import { templates, getTemplate } from "./templates/index.js";
+import type { Template } from './types.js';
 import { createIcons, icons } from "lucide";
 
 let isOpen = false;
-let onSelectCallback = null;
+let onSelectCallback: ((content: string) => void) | null = null;
 
 // DOM Elements
-let modalElement = null;
+let modalElement: HTMLElement | null = null;
 
-function createModalElement() {
+function createModalElement(): HTMLElement {
   if (modalElement) return modalElement;
 
   const modal = document.createElement("div");
@@ -39,9 +40,12 @@ function createModalElement() {
   modalElement = modal;
 
   // Add event listeners
-  const backdrop = modal.querySelector("[data-action='close-modal']");
+  const backdrop = modal.querySelector("[data-action='close-modal']") as HTMLElement;
   backdrop.addEventListener("click", closeModal);
-  backdrop.nextElementSibling.querySelector("[data-action='close-modal']").addEventListener("click", closeModal);
+  const closeButton = backdrop.nextElementSibling?.querySelector("[data-action='close-modal']") as HTMLElement | null;
+  if (closeButton) {
+    closeButton.addEventListener("click", closeModal);
+  }
   modal.addEventListener("keydown", (e) => {
     if (e.key === "Escape") closeModal();
   });
@@ -49,7 +53,7 @@ function createModalElement() {
   return modalElement;
 }
 
-async function renderTemplates() {
+async function renderTemplates(): Promise<void> {
   const grid = document.getElementById("template-grid");
   if (!grid) return;
 
@@ -81,11 +85,11 @@ async function renderTemplates() {
   createIcons({ icons });
 }
 
-function selectTemplate(templateId) {
+function selectTemplate(templateId: string): void {
   if (onSelectCallback) {
     getTemplate(templateId).then((template) => {
       if (template) {
-        onSelectCallback(template.content);
+        onSelectCallback!(template.content);
       }
       closeModal();
     }).catch((error) => {
@@ -97,7 +101,7 @@ function selectTemplate(templateId) {
   }
 }
 
-function openModal(onSelect) {
+export function openModal(onSelect: (content: string) => void): void {
   onSelectCallback = onSelect;
   isOpen = true;
 
@@ -110,13 +114,13 @@ function openModal(onSelect) {
   // Focus trap
   const focusableElements = modal.querySelectorAll(
     "button, [href], input, select, textarea, [tabindex]:not([tabindex='-1'])"
-  );
+  ) as NodeListOf<HTMLElement>;
   if (focusableElements.length > 0) {
     focusableElements[0].focus();
   }
 }
 
-function closeModal() {
+function closeModal(): void {
   if (!isOpen) return;
   isOpen = false;
 
@@ -128,7 +132,7 @@ function closeModal() {
   onSelectCallback = null;
 }
 
-function toggleModal(onSelect) {
+export function toggleModal(onSelect: (content: string) => void): void {
   if (isOpen) {
     closeModal();
   } else {
@@ -137,8 +141,6 @@ function toggleModal(onSelect) {
 }
 
 // Initialize modal on page load (hidden)
-function initTemplateModal() {
+export function initTemplateModal(): void {
   createModalElement();
 }
-
-export { initTemplateModal, openModal, closeModal, toggleModal };

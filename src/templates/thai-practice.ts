@@ -1,5 +1,7 @@
+import type { Template } from '../types.js';
+
 // Template: Thai Practice
-export const template = {
+export const template: Template = {
   id: "thai-practice",
   icon: "🇹🇭",
   category: "language",

@@ -1,5 +1,7 @@
+import type { Template } from '../types.js';
+
 // Template: LaTeX Examples
-export const template = {
+export const template: Template = {
   id: "latex-example",
   icon: "🧮",
   category: "example",
@@ -140,7 +142,7 @@ $$
 ### ค่าเฉลี่ย
 ค่าเฉลี่ยเลขคณิต: $\\bar{x} = \\frac{1}{n}\\sum_{i=1}^{n} x_i$
 
-### ส่วนเบี่ยงเบี่ยง
+### ส่วนเบี่ยงเบี่ยม
 Variance: $\\sigma^2 = \\frac{1}{n}\\sum_{i=1}^{n} (x_i - \\mu)^2$
 
 ### การแจกแจงแบบปกติ (Normal Distribution)

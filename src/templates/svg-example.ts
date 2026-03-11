@@ -1,5 +1,7 @@
+import type { Template } from '../types.js';
+
 // Template: SVG Examples
-export const template = {
+export const template: Template = {
   id: "svg-example",
   icon: "🎨",
   category: "example",
