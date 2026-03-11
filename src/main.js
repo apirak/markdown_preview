@@ -6,10 +6,11 @@ import mermaid from "mermaid";
 import { createIcons, icons } from "lucide";
 import html2canvas from "html2canvas";
 import { jsPDF } from "jspdf";
-import { defaultMarkdown } from "./default-content.js";
 import { initHelpPanel } from "./help-panel.js";
 import { initSiteLink } from "./components/site-link.js";
 import { showToast } from "./toast.js";
+import { initTemplateModal, openModal } from "./template-modal.js";
+import { thaiPractice } from "./templates/index.js";
 
 // --- DOM Elements ---
 const textarea = document.getElementById("editor");
@@ -48,7 +49,7 @@ marked.setOptions({
 // --- EasyMDE Setup ---
 const easymde = new EasyMDE({
   element: textarea,
-  initialValue: defaultMarkdown,
+  initialValue: thaiPractice.content,
   placeholder: "Type here...",
   spellChecker: false,
   status: false,
@@ -123,8 +124,10 @@ async function updatePreview() {
 
 // --- ฟังก์ชันรีเซ็ตกลับไปค่าเริ่มต้น ---
 function resetToDefault() {
-  easymde.value(defaultMarkdown);
-  updatePreview();
+  openModal((content) => {
+    easymde.value(content);
+    updatePreview();
+  });
 }
 
 // --- ฟังก์ชันคัดลอก Markdown (ใช้ Clipboard API แทน execCommand ที่ deprecated) ---
@@ -440,6 +443,7 @@ function handleDownload(format) {
 // --- Initialize ---
 createIcons({ icons });
 initSiteLink();
+initTemplateModal();
 
 // ซ่อน toolbar เป็นค่าเริ่มต้น
 setToolbarVisibility(false);
