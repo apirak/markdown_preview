@@ -6,11 +6,10 @@ export const template: Template = {
   icon: "🎨",
   category: "example",
   name: "Color Mixing Quiz",
-  description: "แบบฝึกหัดการผสมสีสำหรับเด็กๆ พร้อมภาพประกอบสวยงาม",
+  description: "ตัวอย่างเอกสารที่มี SVG ภาพประกอบ",
   content: `# 🎨 แบบฝึกหัดผสมสีสำหรับเด็กๆ
 
 สวัสดีน้องๆ มาเรียนรู้การผสมสีกันเถอะ!
-
 
 ### แดง + เหลือง = สีอะไร?
 
