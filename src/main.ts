@@ -115,7 +115,8 @@ async function updatePreview(): Promise<void> {
     displayMode: boolean;
   }
   const mathBlocks: MathBlock[] = [];
-  const mathBlockPlaceholder = (index: number) => `___MATH_BLOCK_${index}___`;
+  const mathBlockPlaceholder = (index: number) =>
+    `<span data-math-placeholder="${index}"></span>`;
 
   // แทนที่ display math ($$...$$) ด้วย placeholder
   markdownText = markdownText.replace(/\$\$([\s\S]+?)\$\$/g, (_match, math) => {
@@ -136,41 +137,31 @@ async function updatePreview(): Promise<void> {
   // --- แทนที่ placeholder ด้วย KaTeX rendered math ---
   for (let i = 0; i < mathBlocks.length; i++) {
     const { math, displayMode } = mathBlocks[i];
-    const placeholder = mathBlockPlaceholder(i);
-
-    // ค้นหาและแทนที่ text nodes ที่มี placeholder
-    const walker = document.createTreeWalker(
-      preview,
-      NodeFilter.SHOW_TEXT,
-      null,
+    const placeholderEl = preview.querySelector(
+      `[data-math-placeholder="${i}"]`,
     );
+    if (!placeholderEl) continue;
 
-    let node: Node | null;
-    while ((node = walker.nextNode())) {
-      if (node.textContent && node.textContent.includes(placeholder)) {
-        try {
-          const mathHtml = katex.renderToString(math, {
-            displayMode,
-            throwOnError: false,
-          });
-          const span = document.createElement(displayMode ? "div" : "span");
-          span.className = displayMode ? "katex-display" : "katex-inline";
-          span.innerHTML = mathHtml;
-          node.parentNode?.replaceChild(span, node);
-        } catch (e) {
-          const error = e as Error;
-          showToast(`LaTeX Error: ${error.message}`, {
-            type: "error",
-            duration: 5000,
-          });
-          // แสดง raw math แทน
-          const span = document.createElement(displayMode ? "div" : "span");
-          span.className = "text-red-500";
-          span.textContent = `${displayMode ? "$$" : "$"}${math}${displayMode ? "$$" : "$"}`;
-          node.parentNode?.replaceChild(span, node);
-        }
-        break;
-      }
+    try {
+      const mathHtml = katex.renderToString(math, {
+        displayMode,
+        throwOnError: false,
+      });
+      const span = document.createElement(displayMode ? "div" : "span");
+      span.className = displayMode ? "katex-display" : "katex-inline";
+      span.innerHTML = mathHtml;
+      placeholderEl.parentNode?.replaceChild(span, placeholderEl);
+    } catch (e) {
+      const error = e as Error;
+      showToast(`LaTeX Error: ${error.message}`, {
+        type: "error",
+        duration: 5000,
+      });
+      // แสดง raw math แทน
+      const span = document.createElement(displayMode ? "div" : "span");
+      span.className = "text-red-500";
+      span.textContent = `${displayMode ? "$$" : "$"}${math}${displayMode ? "$$" : "$"}`;
+      placeholderEl.parentNode?.replaceChild(span, placeholderEl);
     }
   }
 
