@@ -1,5 +1,8 @@
 // Template: Markdown Example
 export const template = {
+  id: "markdown-example",
+  icon: "📝",
+  category: "example",
   name: "Markdown Example",
   description: "ตัวอย่างเอกสารจริงที่แสดงการใช้ Markdown ในชีวิตประจำวัน",
   content: `# 📝 คู่มือการใช้งานระบบ

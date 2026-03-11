@@ -1,5 +1,8 @@
 // Template: LaTeX Examples
 export const template = {
+  id: "latex-example",
+  icon: "🧮",
+  category: "example",
   name: "LaTeX Examples",
   description: "ตัวอย่างสูตรคณิตศาสตร์ LaTeX ที่รองรับด้วย KaTeX",
   content: `# 🧮 LaTeX Math Examples

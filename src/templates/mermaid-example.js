@@ -1,5 +1,8 @@
 // Template: Mermaid Example
 export const template = {
+  id: "mermaid-example",
+  icon: "📊",
+  category: "example",
   name: "Mermaid Example",
   description: "ตัวอย่างเอกสารที่มี Mermaid diagrams หลากหลายประเภท",
   content: `# 📊 คู่มือสถาปัตยกรรมระบบ

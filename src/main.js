@@ -11,7 +11,7 @@ import { initHelpPanel } from "./help-panel.js";
 import { initSiteLink } from "./components/site-link.js";
 import { showToast } from "./toast.js";
 import { initTemplateModal, openModal } from "./template-modal.js";
-import { thaiPractice } from "./templates/index.js";
+import { template as thaiPractice } from "./templates/thai-practice.js";
 
 // --- DOM Elements ---
 const textarea = document.getElementById("editor");
@@ -303,7 +303,7 @@ async function downloadHTML() {
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>${title}</title>
   <script src="https://cdn.tailwindcss.com?plugins=typography"><\/script>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" integrity="sha384-n8MVd4RsNIU0KOVEMQNogdwFxk+ZbMoH5BnzJG8M CIWzhBZfWFrfMdXRXCrYcRIou" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" crossorigin="anonymous">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Sarabun:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800&display=swap" rel="stylesheet">

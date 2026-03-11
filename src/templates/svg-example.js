@@ -1,5 +1,8 @@
 // Template: SVG Examples
 export const template = {
+  id: "svg-example",
+  icon: "🎨",
+  category: "example",
   name: "SVG Examples",
   description: "ตัวอย่างการใช้ SVG วาดรูปต่างๆ ใน Markdown",
   content: `# 🎨 SVG Examples
