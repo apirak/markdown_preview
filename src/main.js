@@ -7,6 +7,7 @@ import { createIcons, icons } from "lucide";
 import { defaultMarkdown } from "./default-content.js";
 import { initHelpPanel } from "./help-panel.js";
 import { initSiteLink } from "./components/site-link.js";
+import { showToast } from "./toast.js";
 
 // --- DOM Elements ---
 const textarea = document.getElementById("editor");
@@ -19,7 +20,9 @@ const toolbarToggleBtn = document.querySelector(
 // --- Mermaid Setup ---
 mermaid.initialize({
   startOnLoad: false,
-  theme: "default",
+  suppressErrorRendering: true, // ซ่อน error message ใน DOM
+  securityLevel: "loose",
+  theme: "base",
 });
 
 // --- Marked.js Setup ---
@@ -105,7 +108,12 @@ async function updatePreview() {
         const { svg } = await mermaid.render(id, graphDefinition);
         div.innerHTML = svg;
       } catch (e) {
-        div.innerHTML = `<pre class="text-red-500 text-sm">Mermaid Error: ${e.message}</pre>`;
+        // Mermaid error - แสดง toast และเว้นว่างใน preview
+        showToast(`Mermaid Error: ${e.message}`, {
+          type: "error",
+          duration: 8000,
+        });
+        div.innerHTML = "";
       }
     }
   }
@@ -176,9 +184,17 @@ function updatePanelVisibility() {
 
       // Disable close button if only 1 panel is open
       if (!canClose) {
-        closeBtn.classList.add("opacity-30", "cursor-not-allowed", "pointer-events-none");
+        closeBtn.classList.add(
+          "opacity-30",
+          "cursor-not-allowed",
+          "pointer-events-none",
+        );
       } else {
-        closeBtn.classList.remove("opacity-30", "cursor-not-allowed", "pointer-events-none");
+        closeBtn.classList.remove(
+          "opacity-30",
+          "cursor-not-allowed",
+          "pointer-events-none",
+        );
       }
     } else {
       el.classList.add("hidden");
