@@ -1,130 +1,173 @@
-# Plan: Markdown Preview Reset - Fresh SvelteKit Start
+# Plan: Markdown Preview - Desktop App
 
 ## TL;DR
 
-**RESET PROJECT** - Move old code to `legacy/` for reference, start fresh with **SvelteKit** + **Tailwind CSS**. Build incrementally: blank page → basic setup → edit/preview/help pages → full features. Test manually at each step before adding more.
+**Desktop App** สำหรับ Markdown Preview ด้วย **Svelte + Vite + Tailwind CSS + Tauri** เริ่มจากศูนย์ สร้าง 3-panel layout (Editor, Preview, Help) แล้วเพิ่ม features แบบ incremental
 
 ---
 
-## New Approach - Incremental Build
+## Tech Stack
 
-**Key Principles:**
+### Core Technologies
 
-- Start as simple as possible - empty page with just Tailwind + TypeScript working
-- Build ONE feature at a time, test manually before continuing
-- Reference legacy code but don't try to port everything at once
-- Keep decisions minimal initially, evolve as needed
+| Technology | Purpose | Why? |
+|------------|---------|------|
+| **Svelte** (vanilla) | UI Framework | Reactive, simple syntax, great performance |
+| **Vite** | Build Tool | Fast dev server, optimized builds |
+| **Tailwind CSS** | Styling | Utility-first, rapid UI development |
+| **TypeScript** | Type Safety | Catch errors early, better DX |
+| **Tauri** | Desktop Framework | Cross-platform (macOS, Windows, Linux), small bundle size |
 
-## Decisions (So Far)
+### Why Svelte (Not SvelteKit)?
 
-- **Framework**: SvelteKit (fresh init, not migration)
-- **CSS**: Tailwind CSS (via Vite plugin - simpler)
-- **TypeScript**: Yes
-- **Legacy**: Move to `legacy/` folder for reference only
+SvelteKit ออกแบบมาสำหรับ SSR Web Apps พร้อม Routing System ซึ่งเป็น over-engineering สำหรับ Desktop App:
+
+| Aspect | SvelteKit | Svelte + Vite |
+|--------|-----------|---------------|
+| Use Case | SSR Web Apps | Single-page Apps |
+| Complexity | High (adapters, routing, SSR) | Low (straightforward) |
+| Build Output | Static/SSR/Node server | Static HTML/JS/CSS |
+| Tauri Compatible | Need static adapter | ✅ Native fit |
+| Desktop App | Over-engineering | ✅ Perfect fit |
 
 ---
 
-## Incremental Phases
+## App Features
 
-### Phase 0: Reset & Legacy Move
+### Core Features (MVP)
 
-1. Move existing code to `legacy/` folder
-2. Clean slate for new project
+- **Editor Panel** - แก้ไข Markdown พร้อม syntax highlighting
+- **Preview Panel** - แสดงผล Markdown แบบ real-time
+- **Help Panel** - คำแนะนำการใช้งาน
 
-### Phase 1: Fresh SvelteKit Init
+### Advanced Features (From Legacy)
 
-1. Run `npm create svelte@latest .` (or similar)
-2. Choose options: Skeleton, TypeScript, etc.
-3. Verify: `npm run dev` shows default Svelte page
+- **Templates** - 7 เทมเพลตสำเร็ด (Simple, Blog, Documentation, etc.)
+- **Export** - HTML, PDF, PNG download
+- **KaTeX** - สูตรคณิตศาสตร์
+- **Mermaid** - Diagrams (flowchart, sequence, etc.)
+- **Theme** - Light/Dark mode toggle
+- **Copy Button** - Copy markdown/HTML to clipboard
 
-### Phase 2: Tailwind CSS Basic Setup
+---
 
-1. Install Tailwind CSS Vite plugin
-2. Configure minimal `app.css`
-3. Create test page with Tailwind classes
-4. Verify: Styles work, dev server runs clean
+## Incremental Build Phases
 
-### Phase 3: Basic Layout Skeleton
+### Phase 0: Reset & Legacy Move ✅
 
-1. Create simple 3-panel layout (static, no functionality yet)
-2. Basic header
-3. Static content panels for: Editor, Preview, Help
-4. Verify: Layout looks roughly right
+- [x] Move existing code to `legacy/` folder
+- [x] Clean slate for new project
 
-### Phase 4: Editor Page (Manual Test)
+### Phase 1: Svelte + Vite + Tailwind Setup ✅
 
-1. Add basic textarea or simple editor
-2. Show typed text in preview panel (simple markdown render)
-3. Verify: Can type, see preview update
+- [x] Install dependencies
+- [x] Create project structure
+- [x] Configure Vite + Tailwind
+- [x] Create basic 3-panel layout
 
-### Phase 5: Preview Page (Manual Test)
+### Phase 2: Editor Functionality
 
-1. Better markdown rendering (marked.js or similar)
-2. Basic styling for preview
-3. Verify: Markdown renders properly
+1. Bind textarea to state
+2. Add markdown syntax highlight (เริ่มจาก plain textarea ก่อน)
+3. Add word/character count
+4. Verify: Can type, state updates correctly
 
-### Phase 6: Help Page (Manual Test)
+### Phase 3: Preview Rendering
 
-1. Static help content
-2. Basic styling
-3. Verify: Help shows up
+1. Install markdown parser (`marked`)
+2. Parse markdown to HTML
+3. Render in preview panel
+4. Add basic CSS styling for HTML elements
+5. Verify: Markdown renders correctly
 
-### Phase 7: Add Features Incrementally
+### Phase 4: KaTeX + Mermaid Support
 
-Add features one by one from legacy:
+1. Install KaTeX and Mermaid
+2. Add math block rendering
+3. Add diagram rendering
+4. Verify: Math and diagrams display correctly
 
-- Templates
-- Copy button
-- Export (HTML/PDF/PNG)
-- Theme toggle
-- Toast notifications
-- Better editor (EasyMDE or CodeMirror)
+### Phase 5: Templates System
 
-### Phase 8: Polish & Cleanup
+1. Create template definitions (7 templates from legacy)
+2. Add template selector UI
+3. Apply template to editor
+4. Verify: Templates load and work
+
+### Phase 6: Export Features
+
+1. HTML export (copy/download)
+2. PDF export
+3. PNG export (html2canvas)
+4. Verify: All exports work
+
+### Phase 7: Theme Toggle
+
+1. Create theme store/state
+2. Add light/dark mode toggle
+3. Apply theme to all panels
+4. Persist to localStorage
+5. Verify: Theme switches correctly
+
+### Phase 8: Tauri Integration
+
+1. Install `@tauri-apps/cli`
+2. Run `pnpm tauri init`
+3. Configure Tauri (window size, build command)
+4. Test desktop app
+5. Package for distribution
+
+### Phase 9: Polish & Cleanup
 
 1. Compare with legacy feature list
 2. Fill in missing pieces
-3. Delete `legacy/` folder when confident
+3. Add keyboard shortcuts
+4. Optimize performance
+5. Delete `legacy/` folder when confident
 
 ---
 
-## SvelteKit Init Options (To Decide)
+## Project Structure
 
-When running `npm create svelte@latest`, need to choose:
-
-```bash
-? Which Svelte app template?
-  - Skeleton project (minimal - good for custom styling)
-
-? Add type checking?
-  - Yes, TypeScript
-
-? Select additional options:
-  - ESLint? (Yes/No)
-  - Prettier? (Yes/No)
-  - Playwright? (Yes/No)
-  - Vitest? (Yes/No)
+```
+markdown_preview/
+├── src/
+│   ├── main.ts              ← Entry point
+│   ├── App.svelte           ← Root component (3-panel layout)
+│   ├── app.css              ← Tailwind CSS
+│   └── lib/
+│       ├── components/      ← Reusable components
+│       │   ├── Editor.svelte
+│       │   ├── Preview.svelte
+│       │   └── Help.svelte
+│       └── utils/           ← Helper functions
+│           ├── markdown.ts  ← Markdown parsing
+│           └── templates.ts ← Template definitions
+├── index.html               ← HTML entry
+├── vite.config.ts           ← Vite config
+├── tsconfig.json            ← TypeScript config
+├── package.json             ← Dependencies & scripts
+├── docs/                    ← Documentation
+├── legacy/                  ← Old code (reference)
+└── src-tauri/               ← Tauri config (Phase 8)
 ```
 
 ---
 
-## Target Features (From Legacy)
+## Development Scripts
 
-Reference these files when building incrementally:
-
-- **Editor**: Basic textarea → EasyMDE/CodeMirror
-- **Preview**: marked.js + KaTeX + Mermaid
-- **Templates**: 7 template definitions
-- **Export**: HTML, PDF, PNG download
-- **UI**: 3-panel layout, toggle panels
-- **Theme**: Light/Dark/System toggle
-- **Notifications**: Toast system
+```bash
+pnpm dev       # Start dev server (http://localhost:5173)
+pnpm build     # Build for production
+pnpm preview   # Preview production build
+pnpm check     # TypeScript check
+```
 
 ---
 
 ## Notes
 
-- Keep it simple at each step
-- Test manually after each phase
-- Don't build everything at once
-- Reference `legacy/` code as needed, not as a blueprint to follow exactly
+- **Start simple**: Plain textarea ก่อน, ค่อย upgrade เป็น CodeMirror/EasyMDE ภายหลัง
+- **Test manually**: ทดสอบแต่ละ phase ก่อนไปต่อ
+- **Reference legacy**: ดูโค้ดเก่าได้ แต่ไม่ต้อง copy ทุกอย่าง
+- **Incremental**: เพิ่ม feature ทีละอย่าง, อย่าทำพร้อมกัน

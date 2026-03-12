@@ -6,7 +6,11 @@
       "Bash(pnpm exec:*)",
       "Bash(ls /Users/apirak/workspace/markdown_preview/src/**/*.js)",
       "Bash(pnpm typecheck:*)",
-      "Bash(pnpm typecheck:classic)"
+      "Bash(pnpm typecheck:classic)",
+      "Bash(pnpm init:*)"
+    ],
+    "additionalDirectories": [
+      "/Users/apirak/workspace/markdown_preview/.vscode"
     ]
   }
 }
