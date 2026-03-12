@@ -15,7 +15,7 @@
 
   let editorEl: HTMLTextAreaElement;
   let easymde: EasyMDE;
-  let showTemplates = $state(false);
+  let isTemplateListOpen = $state(false);
   let toolbarVisible = $state(false);
   let copyBtn: HTMLButtonElement;
 
@@ -107,7 +107,7 @@
     </div>
     <div class="flex items-center gap-2">
       <button
-        onclick={() => (showTemplates = !showTemplates)}
+        onclick={() => (isTemplateListOpen = !isTemplateListOpen)}
         class="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-slate-500 hover:text-slate-700 hover:bg-slate-200 rounded transition-colors duration-200"
       >
         <i data-lucide="layout-template" class="w-3.5 h-3.5"></i> Template
@@ -128,10 +128,10 @@
   <div class="flex-1 min-h-0 overflow-auto relative" style="overscroll-behavior-y: none">
     <textarea bind:this={editorEl}></textarea>
 
-    {#if showTemplates}
+    {#if isTemplateListOpen}
       <TemplateList
         onSelect={handleTemplateSelect}
-        onClose={() => (showTemplates = false)}
+        onClose={() => (isTemplateListOpen = false)}
       />
     {/if}
   </div>

@@ -14,15 +14,13 @@
 
   let previewEl: HTMLDivElement;
 
-  async function update(): Promise<void> {
+  async function update(text: string): Promise<void> {
     if (!previewEl) return;
-    await renderMarkdown(markdownText, previewEl);
+    await renderMarkdown(text, previewEl);
   }
 
   $effect(() => {
-    // Re-render whenever markdownText changes
-    void markdownText;
-    update();
+    update(markdownText);
   });
 
   onMount(() => {

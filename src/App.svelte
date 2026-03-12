@@ -15,7 +15,7 @@
   let toolbarVisible = $state(false);
 
   // Reference to EditorPanel for toolbar/refresh control
-  let editorPanel: ReturnType<typeof EditorPanel> = $state(undefined as unknown as ReturnType<typeof EditorPanel>);
+  let editorPanel: ReturnType<typeof EditorPanel> | undefined = $state(undefined);
 
   function handleToggleToolbar(): void {
     toolbarVisible = !toolbarVisible;
