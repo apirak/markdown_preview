@@ -1,43 +1,60 @@
 <script lang="ts">
-	// Root component with 3-panel layout
-	let editorText = $state('# Markdown Preview\n\nStart typing to see the preview...');
+	import { parseMarkdown } from './lib/utils/markdown';
+	import Header from './lib/components/Header.svelte';
+	import HelpPanel from './lib/components/HelpPanel.svelte';
+	import EditorPanel from './lib/components/EditorPanel.svelte';
+	import PreviewPanel from './lib/components/PreviewPanel.svelte';
+	import type { DownloadFormat } from './lib/types';
+
+	// Editor state
+	let editorText = $state('# Markdown Preview\n\nStart typing to see the preview...\n\n## Features\n\n- **Bold** and *italic* text\n- Lists like this\n- `code` snippets\n\n## Try it out!\n\nType in the editor and see the preview update in real-time!');
+
+	// Derived state for preview HTML
+	const previewHtml = $derived(parseMarkdown(editorText));
+
+	// Callback for editor text changes
+	function handleTextChange(value: string) {
+		editorText = value;
+	}
+
+	// Callback functions for panels
+	function handleCopy() {
+		navigator.clipboard.writeText(editorText);
+		// TODO: Show toast notification
+	}
+
+	function handleDownload(format: DownloadFormat) {
+		// TODO: Implement download
+		console.log('Download', format);
+	}
+
+	function handleTemplate() {
+		// TODO: Open template modal
+		console.log('Open template modal');
+	}
 </script>
 
-<div class="h-screen flex flex-col bg-gray-50">
-	<header class="bg-white border-b border-gray-200 px-6 py-4">
-		<h1 class="text-xl font-bold text-gray-800">Markdown Preview</h1>
-		<p class="text-sm text-gray-500">Desktop App with Svelte + Vite + Tauri</p>
-	</header>
+<div class="h-screen flex flex-col bg-slate-50 dark:bg-gray-900 text-slate-800 dark:text-slate-100 overflow-hidden">
+	<!-- Header -->
+	<Header />
 
-	<main class="flex-1 flex overflow-hidden">
+	<!-- Main Content -->
+	<main class="flex-1 flex flex-row overflow-hidden">
+		<!-- Help Panel -->
+		<HelpPanel />
+
 		<!-- Editor Panel -->
-		<section class="flex-1 border-r border-gray-200 p-4">
-			<h2 class="text-lg font-semibold text-gray-700 mb-2">Editor</h2>
-			<textarea
-				bind:value={editorText}
-				class="w-full h-full p-4 border border-gray-300 rounded-lg font-mono text-sm resize-none focus:outline-none focus:ring-2 focus:ring-indigo-500"
-				placeholder="Type your markdown here..."
-			></textarea>
-		</section>
+		<EditorPanel
+			editorText={editorText}
+			onTextChange={handleTextChange}
+			onCopy={handleCopy}
+			onTemplate={handleTemplate}
+		/>
 
 		<!-- Preview Panel -->
-		<section class="flex-1 border-r border-gray-200 p-4 overflow-auto">
-			<h2 class="text-lg font-semibold text-gray-700 mb-2">Preview</h2>
-			<div class="prose prose-sm max-w-none">
-				<p class="text-gray-500 italic">Preview will appear here...</p>
-			</div>
-		</section>
-
-		<!-- Help Panel -->
-		<section class="w-64 p-4 bg-white overflow-auto">
-			<h2 class="text-lg font-semibold text-gray-700 mb-2">Help</h2>
-			<div class="text-sm text-gray-600 space-y-2">
-				<p><strong>Bold:</strong> **text**</p>
-				<p><strong>Italic:</strong> *text*</p>
-				<p><strong>Heading:</strong> # Heading</p>
-				<p><strong>Link:</strong> [text](url)</p>
-				<p><strong>Code:</strong> `code`</p>
-			</div>
-		</section>
+		<PreviewPanel
+			previewHtml={previewHtml}
+			onDownload={handleDownload}
+		/>
 	</main>
 </div>

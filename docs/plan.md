@@ -12,9 +12,9 @@
 
 | Technology | Purpose | Why? |
 |------------|---------|------|
-| **Svelte** (vanilla) | UI Framework | Reactive, simple syntax, great performance |
+| **Svelte 5** (vanilla) | UI Framework | Reactive, simple syntax, great performance, runes mode |
 | **Vite** | Build Tool | Fast dev server, optimized builds |
-| **Tailwind CSS** | Styling | Utility-first, rapid UI development |
+| **Tailwind CSS v4** | Styling | Utility-first, rapid UI development |
 | **TypeScript** | Type Safety | Catch errors early, better DX |
 | **Tauri** | Desktop Framework | Cross-platform (macOS, Windows, Linux), small bundle size |
 
@@ -60,54 +60,56 @@ SvelteKit ออกแบบมาสำหรับ SSR Web Apps พร้อ�
 
 ### Phase 1: Svelte + Vite + Tailwind Setup ✅
 
-- [x] Install dependencies
+- [x] Install dependencies (Svelte 5, Vite, Tailwind v4, TypeScript)
 - [x] Create project structure
-- [x] Configure Vite + Tailwind
+- [x] Configure Vite + Tailwind CSS
 - [x] Create basic 3-panel layout
 
-### Phase 2: Editor Functionality
+### Phase 2: Component Refactoring ✅
 
-1. Bind textarea to state
-2. Add markdown syntax highlight (เริ่มจาก plain textarea ก่อน)
-3. Add word/character count
-4. Verify: Can type, state updates correctly
+- [x] Extract Header component (logo, title, action buttons)
+- [x] Extract HelpPanel component (markdown guide)
+- [x] Extract EditorPanel component (textarea, Template/Copy buttons)
+- [x] Extract PreviewPanel component (rendered HTML, export buttons)
+- [x] Use Svelte 5 runes mode (`$state`, `$derived`, `$props()`)
+- [x] Reduce App.svelte from 365 → 55 lines (~85% reduction)
 
-### Phase 3: Preview Rendering
+### Phase 3: Editor & Preview Basic Functionality ✅
 
-1. Install markdown parser (`marked`)
-2. Parse markdown to HTML
-3. Render in preview panel
-4. Add basic CSS styling for HTML elements
-5. Verify: Markdown renders correctly
+- [x] Bind textarea to reactive state
+- [x] Markdown parsing with `marked` library
+- [x] Real-time preview rendering
+- [x] Panel toggle system (Help/Editor/Preview)
+- [x] Copy button functionality
 
-### Phase 4: KaTeX + Mermaid Support
+### Phase 4: Theme System (In Progress)
+
+- [x] Create theme store with `writable` from Svelte stores
+- [x] Load/save theme from localStorage
+- [x] Add dark mode CSS classes to all components
+- [ ] Fix theme toggle button reactivity issue
+- [ ] Verify theme switches correctly across all panels
+
+### Phase 5: Templates System
+
+1. Create template definitions (7 templates from legacy)
+2. Add template selector UI (inline or modal)
+3. Apply template to editor
+4. Verify: Templates load and work
+
+### Phase 6: KaTeX + Mermaid Support
 
 1. Install KaTeX and Mermaid
 2. Add math block rendering
 3. Add diagram rendering
 4. Verify: Math and diagrams display correctly
 
-### Phase 5: Templates System
-
-1. Create template definitions (7 templates from legacy)
-2. Add template selector UI
-3. Apply template to editor
-4. Verify: Templates load and work
-
-### Phase 6: Export Features
+### Phase 7: Export Features
 
 1. HTML export (copy/download)
 2. PDF export
 3. PNG export (html2canvas)
 4. Verify: All exports work
-
-### Phase 7: Theme Toggle
-
-1. Create theme store/state
-2. Add light/dark mode toggle
-3. Apply theme to all panels
-4. Persist to localStorage
-5. Verify: Theme switches correctly
 
 ### Phase 8: Tauri Integration
 
@@ -132,42 +134,103 @@ SvelteKit ออกแบบมาสำหรับ SSR Web Apps พร้อ�
 ```
 markdown_preview/
 ├── src/
-│   ├── main.ts              ← Entry point
-│   ├── App.svelte           ← Root component (3-panel layout)
-│   ├── app.css              ← Tailwind CSS
+│   ├── main.ts              ← Entry point (mount App)
+│   ├── App.svelte           ← Root component (~55 lines)
+│   ├── app.css              ← Tailwind CSS + dark mode
 │   └── lib/
 │       ├── components/      ← Reusable components
-│       │   ├── Editor.svelte
-│       │   ├── Preview.svelte
-│       │   └── Help.svelte
+│       │   ├── Header.svelte      ← Logo, title, theme toggle, panel toggles
+│       │   ├── HelpPanel.svelte   ← Markdown guide content
+│       │   ├── EditorPanel.svelte ← Textarea + Template/Copy buttons
+│       │   └── PreviewPanel.svelte ← Rendered HTML + export buttons
+│       ├── stores/          ← State management
+│       │   ├── theme.ts           ← Theme store (light/dark)
+│       │   └── panels.ts          ← Panel visibility state
+│       ├── types.ts         ← TypeScript types
 │       └── utils/           ← Helper functions
-│           ├── markdown.ts  ← Markdown parsing
-│           └── templates.ts ← Template definitions
+│           └── markdown.ts  ← Markdown parsing (marked)
 ├── index.html               ← HTML entry
-├── vite.config.ts           ← Vite config
+├── vite.config.ts           ← Vite config (Svelte + Tailwind)
 ├── tsconfig.json            ← TypeScript config
 ├── package.json             ← Dependencies & scripts
 ├── docs/                    ← Documentation
+│   └── plan.md              ← This file
 ├── legacy/                  ← Old code (reference)
 └── src-tauri/               ← Tauri config (Phase 8)
 ```
 
 ---
 
+## Component Architecture
+
+### App.svelte (Root)
+- Holds main editor state (`editorText`)
+- Manages preview HTML derivation
+- Handles callbacks (copy, download, template, text change)
+- Composes Header, HelpPanel, EditorPanel, PreviewPanel
+
+### Header.svelte
+- Logo + title with apirak.com link
+- Theme toggle button (🌙/☀️)
+- Toolbar toggle button (TODO)
+- Panel toggle buttons (Help, Edit, Preview)
+
+### HelpPanel.svelte
+- Markdown syntax guide
+- Close button (when not the last panel)
+
+### EditorPanel.svelte
+- Textarea for markdown input
+- Template button (TODO functionality)
+- Copy button (copies editor text)
+- Close button (when not the last panel)
+
+### PreviewPanel.svelte
+- Rendered HTML from markdown
+- Export buttons: HTML, PDF, PNG (TODO functionality)
+- Close button (when not the last panel)
+
+---
+
 ## Development Scripts
 
 ```bash
-pnpm dev       # Start dev server (http://localhost:5173)
-pnpm build     # Build for production
-pnpm preview   # Preview production build
-pnpm check     # TypeScript check
+npm run dev       # Start dev server (http://localhost:5173)
+npm run build     # Build for production
+npm run preview   # Preview production build
+npm run check     # TypeScript + Svelte check
 ```
+
+---
+
+## Known Issues
+
+### Theme Toggle Reactivity
+**Status**: Store created, but toggle button not fully reactive yet
+
+**Current Implementation**:
+```typescript
+// src/lib/stores/theme.ts
+export const theme = writable<Theme>(stored || 'light');
+theme.subscribe((value) => {
+  localStorage.setItem('theme', value);
+  document.documentElement.classList.toggle('dark', value === 'dark');
+});
+```
+
+**Issue**: Theme icon updates but full reactivity across components needs verification
+
+**Next Steps**:
+1. Verify `$theme` store subscription in Header.svelte
+2. Ensure dark mode classes apply to all elements
+3. Test theme persistence on page reload
 
 ---
 
 ## Notes
 
-- **Start simple**: Plain textarea ก่อน, ค่อย upgrade เป็น CodeMirror/EasyMDE ภายหลัง
-- **Test manually**: ทดสอบแต่ละ phase ก่อนไปต่อ
-- **Reference legacy**: ดูโค้ดเก่าได้ แต่ไม่ต้อง copy ทุกอย่าง
+- **Svelte 5 Runes Mode**: Using `$state`, `$derived`, `$props()` instead of old Svelte syntax
+- **Component Props**: Using callback pattern for two-way binding (e.g., `onTextChange`)
+- **Type Safety**: All components fully typed with TypeScript interfaces
 - **Incremental**: เพิ่ม feature ทีละอย่าง, อย่าทำพร้อมกัน
+- **Reference legacy**: ดูโค้ดเก่าได้ แต่ไม่ต้อง copy ทุกอย่าง
