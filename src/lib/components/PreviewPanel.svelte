@@ -78,7 +78,7 @@
 		<!-- Panel Content -->
 		<div
 			id="preview"
-			class="flex-1 w-full p-8 overflow-y-auto prose prose-sm prose-slate prose-blue max-w-none dark:prose-invert"
+			class="markdown-preview flex-1 w-full p-8 overflow-y-auto"
 			style="overscroll-behavior-y: none"
 		>
 			{@html previewHtml}

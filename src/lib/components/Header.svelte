@@ -10,10 +10,7 @@
 	}
 
 	function handleThemeToggle() {
-		const current = $theme;
-		const next = current === 'light' ? 'dark' : 'light';
-		console.log('[Header] Theme toggle:', current, '->', next);
-		theme.update((t: Theme) => next);
+		theme.update((t: Theme) => (t === 'light' ? 'dark' : 'light'));
 	}
 </script>
 

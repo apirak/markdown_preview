@@ -15,15 +15,12 @@
 
 	// Theme initialization - sync with DOM class
 	$effect(() => {
-		console.log('[App] Setting up theme subscription...');
 		const unsub = theme.subscribe((value) => {
-			console.log('[App] Theme changed to:', value);
 			if (typeof localStorage !== 'undefined') {
 				localStorage.setItem('theme', value);
 			}
 			if (typeof document !== 'undefined') {
 				document.documentElement.classList.toggle('dark', value === 'dark');
-				console.log('[App] DOM dark class:', document.documentElement.classList.contains('dark'));
 			}
 		});
 		return unsub;
