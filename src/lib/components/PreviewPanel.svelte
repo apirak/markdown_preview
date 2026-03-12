@@ -4,8 +4,19 @@
 	import { Eye, FileCode, FileText, Image } from 'lucide-svelte';
 	import PanelActionButton from './buttons/PanelActionButton.svelte';
 	import PanelCloseButton from './buttons/PanelCloseButton.svelte';
+	import { onMount, tick } from 'svelte';
+	import mermaid from 'mermaid';
 
 	const iconAttrs = { strokeWidth: 2, class: 'w-4 h-4' };
+
+	// Initialize Mermaid
+	onMount(() => {
+		mermaid.initialize({
+			startOnLoad: false,
+			theme: 'default',
+			securityLevel: 'loose',
+		});
+	});
 
 	interface Props {
 		previewHtml: string;
@@ -13,6 +24,32 @@
 	}
 
 	let { previewHtml, onDownload }: Props = $props();
+
+	// Initialize Mermaid diagrams after preview updates
+	$effect(() => {
+		(async () => {
+			try {
+				await tick();
+				const previewElement = document.getElementById('preview');
+				if (previewElement) {
+					const mermaidDivs = previewElement.querySelectorAll('.mermaid');
+					if (mermaidDivs.length > 0) {
+						try {
+							await mermaid.run({
+								querySelector: '.mermaid'
+							});
+						} catch (error) {
+							// Don't let mermaid errors break the app
+							console.warn('Mermaid rendering error:', error);
+						}
+					}
+				}
+			} catch (error) {
+				// Don't let any errors break the app
+				console.warn('Preview update error:', error);
+			}
+		})();
+	});
 
 	function handlePanelToggle(name: PanelName) {
 		panels.set(togglePanel(name, $panels));

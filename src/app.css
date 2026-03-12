@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@import "katex/dist/katex.min.css";
 
 /* Enable dark mode with class strategy */
 @variant dark (&:where(.dark, .dark *));

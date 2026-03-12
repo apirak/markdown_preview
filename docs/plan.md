@@ -107,12 +107,12 @@ SvelteKit ออกแบบมาสำหรับ SSR Web Apps พร้อ�
 - [x] Integrate template selection in App.svelte
 - [x] Templates load and apply to editor correctly
 
-### Phase 6: KaTeX + Mermaid Support
+### Phase 6: KaTeX + Mermaid Support ✅
 
-1. Install KaTeX and Mermaid
-2. Add math block rendering
-3. Add diagram rendering
-4. Verify: Math and diagrams display correctly
+- [x] Install KaTeX and Mermaid
+- [x] Add math block rendering
+- [x] Add diagram rendering
+- [x] Verify: Math and diagrams display correctly
 
 ### Phase 7: Export Features
 
