@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { parseMarkdown } from './lib/utils/markdown';
+	import { theme } from './lib/stores/theme';
 	import Header from './lib/components/Header.svelte';
 	import HelpPanel from './lib/components/HelpPanel.svelte';
 	import EditorPanel from './lib/components/EditorPanel.svelte';
@@ -11,6 +12,22 @@
 
 	// Derived state for preview HTML
 	const previewHtml = $derived(parseMarkdown(editorText));
+
+	// Theme initialization - sync with DOM class
+	$effect(() => {
+		console.log('[App] Setting up theme subscription...');
+		const unsub = theme.subscribe((value) => {
+			console.log('[App] Theme changed to:', value);
+			if (typeof localStorage !== 'undefined') {
+				localStorage.setItem('theme', value);
+			}
+			if (typeof document !== 'undefined') {
+				document.documentElement.classList.toggle('dark', value === 'dark');
+				console.log('[App] DOM dark class:', document.documentElement.classList.contains('dark'));
+			}
+		});
+		return unsub;
+	});
 
 	// Callback for editor text changes
 	function handleTextChange(value: string) {

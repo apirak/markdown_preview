@@ -7,11 +7,3 @@ const stored = typeof localStorage !== 'undefined'
 	: null;
 
 export const theme = writable<Theme>(stored || 'light');
-
-// Subscribe to update DOM class and localStorage when theme changes
-if (typeof document !== 'undefined') {
-	theme.subscribe((value) => {
-		localStorage.setItem('theme', value);
-		document.documentElement.classList.toggle('dark', value === 'dark');
-	});
-}

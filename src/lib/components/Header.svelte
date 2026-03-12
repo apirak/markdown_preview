@@ -8,6 +8,13 @@
 	function handlePanelToggle(name: PanelName) {
 		panels.set(togglePanel(name, $panels));
 	}
+
+	function handleThemeToggle() {
+		const current = $theme;
+		const next = current === 'light' ? 'dark' : 'light';
+		console.log('[Header] Theme toggle:', current, '->', next);
+		theme.update((t: Theme) => next);
+	}
 </script>
 
 <header
@@ -49,7 +56,7 @@
 	<div class="flex items-center gap-2">
 		<!-- Theme Toggle -->
 		<HeaderButton
-			onclick={() => theme.update((t: Theme) => (t === 'light' ? 'dark' : 'light'))}
+			onclick={handleThemeToggle}
 			title="Toggle theme"
 		>
 			{$theme === 'light' ? '🌙' : '☀️'}
