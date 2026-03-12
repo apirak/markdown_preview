@@ -27,37 +27,43 @@
 	let { previewHtml, onDownload }: Props = $props();
 
 	// Initialize Mermaid diagrams after preview updates
-	$effect(async () => {
-		// Wait for DOM to update
-		await tick();
+	$effect(() => {
+		// Track previewHtml as dependency
+		previewHtml;
 
-		// Additional delay to ensure DOM is fully rendered
-		await new Promise(resolve => setTimeout(resolve, 10));
+		// Use IIFE for async code
+		(async () => {
+			// Wait for DOM to update
+			await tick();
 
-		try {
-			const previewElement = document.getElementById('preview');
-			if (previewElement) {
-				// Find unprocessed mermaid divs
-				const unprocessedDivs = Array.from(previewElement.querySelectorAll('.mermaid:not([data-processed])'));
+			// Additional delay to ensure DOM is fully rendered
+			await new Promise(resolve => setTimeout(resolve, 10));
 
-				if (unprocessedDivs.length > 0) {
-					console.log('Found unprocessed mermaid divs:', unprocessedDivs.length);
+			try {
+				const previewElement = document.getElementById('preview');
+				if (previewElement) {
+					// Find unprocessed mermaid divs
+					const unprocessedDivs = Array.from(previewElement.querySelectorAll('.mermaid:not([data-processed])'));
 
-					try {
-						// Use mermaid.run with the unprocessed elements
-						const { svg } = await mermaid.run({
-							nodes: unprocessedDivs as HTMLElement[]
-						});
+					if (unprocessedDivs.length > 0) {
+						console.log('Found unprocessed mermaid divs:', unprocessedDivs.length);
 
-						console.log('Mermaid rendered successfully');
-					} catch (error) {
-						console.warn('Mermaid rendering error:', error);
+						try {
+							// Use mermaid.run with the unprocessed elements
+							await mermaid.run({
+								nodes: unprocessedDivs as HTMLElement[]
+							});
+
+							console.log('Mermaid rendered successfully');
+						} catch (error) {
+							console.warn('Mermaid rendering error:', error);
+						}
 					}
 				}
+			} catch (error) {
+				console.warn('Mermaid effect error:', error);
 			}
-		} catch (error) {
-			console.warn('Mermaid effect error:', error);
-		}
+		})();
 	});
 
 	function handlePanelToggle(name: PanelName) {
