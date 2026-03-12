@@ -18,3 +18,12 @@ export interface AppState {
 }
 
 export type DownloadFormat = 'html' | 'pdf' | 'png';
+
+export interface Template {
+	id: string;
+	icon: string;
+	category: string;
+	name: string;
+	description: string;
+	content: string;
+}

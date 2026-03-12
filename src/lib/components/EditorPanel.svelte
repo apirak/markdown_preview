@@ -1,9 +1,10 @@
 <script lang="ts">
 	import { panels, togglePanel } from '../stores/panels';
-	import type { PanelName } from '../types';
+	import type { PanelName, Template } from '../types';
 	import { SquarePen, LayoutTemplate, Copy } from 'lucide-svelte';
 	import PanelActionButton from './buttons/PanelActionButton.svelte';
 	import PanelCloseButton from './buttons/PanelCloseButton.svelte';
+	import TemplateList from './TemplateList.svelte';
 
 	const iconAttrs = { strokeWidth: 2, class: 'w-4 h-4' };
 
@@ -12,9 +13,20 @@
 		onTextChange: (value: string) => void;
 		onCopy: () => void;
 		onTemplate: () => void;
+		showTemplateList: boolean;
+		onTemplateSelect: (template: Template) => void;
+		onCloseTemplateList: () => void;
 	}
 
-	let { editorText, onTextChange, onCopy, onTemplate }: Props = $props();
+	let {
+		editorText,
+		onTextChange,
+		onCopy,
+		onTemplate,
+		showTemplateList,
+		onTemplateSelect,
+		onCloseTemplateList
+	}: Props = $props();
 
 	function handlePanelToggle(name: PanelName) {
 		panels.set(togglePanel(name, $panels));
@@ -71,6 +83,11 @@
 				class="w-full h-full p-4 font-mono text-sm resize-none focus:outline-none bg-white dark:bg-gray-900 text-slate-800 dark:text-slate-200"
 				placeholder="Type your markdown here..."
 			></textarea>
+
+			<!-- Inline Template List -->
+			{#if showTemplateList}
+				<TemplateList onSelect={onTemplateSelect} onClose={onCloseTemplateList} />
+			{/if}
 		</div>
 	</section>
 {/if}

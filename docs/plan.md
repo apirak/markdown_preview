@@ -82,20 +82,30 @@ SvelteKit ออกแบบมาสำหรับ SSR Web Apps พร้อ�
 - [x] Panel toggle system (Help/Editor/Preview)
 - [x] Copy button functionality
 
-### Phase 4: Theme System (In Progress)
+### Phase 4: Theme System ✅
 
 - [x] Create theme store with `writable` from Svelte stores
 - [x] Load/save theme from localStorage
 - [x] Add dark mode CSS classes to all components
-- [ ] Fix theme toggle button reactivity issue
-- [ ] Verify theme switches correctly across all panels
+- [x] Fix theme toggle button reactivity with `$effect`
+- [x] Add Tailwind v4 dark mode with `@variant` directive
+- [x] Verify theme switches correctly across all panels
+- [x] Add GitHub-like markdown preview styles
 
-### Phase 5: Templates System
+### Phase 5: Templates System ✅
 
-1. Create template definitions (7 templates from legacy)
-2. Add template selector UI (inline or modal)
-3. Apply template to editor
-4. Verify: Templates load and work
+- [x] Create Template type in types.ts
+- [x] Create src/lib/templates/ folder with 7 templates:
+  - Simple Template (blank)
+  - Thai Practice (ฝึกภาษาไทย)
+  - English Practice
+  - Markdown Example
+  - Mermaid Example
+  - SVG Example
+  - LaTeX Examples
+- [x] Create TemplateList modal component
+- [x] Integrate template selection in App.svelte
+- [x] Templates load and apply to editor correctly
 
 ### Phase 6: KaTeX + Mermaid Support
 

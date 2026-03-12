@@ -5,10 +5,14 @@
 	import HelpPanel from './lib/components/HelpPanel.svelte';
 	import EditorPanel from './lib/components/EditorPanel.svelte';
 	import PreviewPanel from './lib/components/PreviewPanel.svelte';
-	import type { DownloadFormat } from './lib/types';
+	import TemplateList from './lib/components/TemplateList.svelte';
+	import type { DownloadFormat, Template } from './lib/types';
 
 	// Editor state
 	let editorText = $state('# Markdown Preview\n\nStart typing to see the preview...\n\n## Features\n\n- **Bold** and *italic* text\n- Lists like this\n- `code` snippets\n\n## Try it out!\n\nType in the editor and see the preview update in real-time!');
+
+	// Template list state
+	let showTemplateList = $state(false);
 
 	// Derived state for preview HTML
 	const previewHtml = $derived(parseMarkdown(editorText));
@@ -43,8 +47,17 @@
 	}
 
 	function handleTemplate() {
-		// TODO: Open template modal
-		console.log('Open template modal');
+		showTemplateList = !showTemplateList;
+		console.log('[App] Template list toggled:', showTemplateList);
+	}
+
+	function handleTemplateSelect(template: Template) {
+		editorText = template.content;
+		showTemplateList = false;
+	}
+
+	function closeTemplateList() {
+		showTemplateList = false;
 	}
 </script>
 
@@ -63,6 +76,9 @@
 			onTextChange={handleTextChange}
 			onCopy={handleCopy}
 			onTemplate={handleTemplate}
+			showTemplateList={showTemplateList}
+			onTemplateSelect={handleTemplateSelect}
+			onCloseTemplateList={closeTemplateList}
 		/>
 
 		<!-- Preview Panel -->
