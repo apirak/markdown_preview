@@ -167,7 +167,7 @@
 >
 	<div bind:this={contentDiv} class="flex {expanded ? 'flex-wrap' : 'flex-nowrap overflow-x-auto'} items-center gap-1 flex-1">
 		<!-- Text Formatting -->
-		<div class="flex items-center gap-0.5 pr-2 border-r border-slate-200 dark:border-slate-700 flex-shrink-0">
+		<div class="flex items-center gap-0.5 pr-2 border-r border-slate-200 dark:border-slate-700 shrink-0">
 			<ToolbarButton icon={Bold} onclick={bold} title="Bold (Ctrl+B)" />
 			<ToolbarButton icon={Italic} onclick={italic} title="Italic (Ctrl+I)" />
 			<ToolbarButton icon={Strikethrough} onclick={strikethrough} title="Strikethrough" />
@@ -175,27 +175,27 @@
 		</div>
 
 		<!-- Structure -->
-		<div class="flex items-center gap-0.5 px-2 flex-shrink-0">
+		<div class="flex items-center gap-0.5 px-2 shrink-0">
 			<ToolbarButton icon={Heading} onclick={heading} title="Heading" />
 			<ToolbarButton icon={Table} onclick={table} title="Table" />
 		</div>
 
 		<!-- Blocks -->
-		<div class="flex items-center gap-0.5 px-2 border-l border-slate-200 dark:border-slate-700 flex-shrink-0">
+		<div class="flex items-center gap-0.5 px-2 border-l border-slate-200 dark:border-slate-700 shrink-0">
 			<ToolbarButton icon={Quote} onclick={quote} title="Blockquote" />
 			<ToolbarButton icon={FileCode} onclick={codeBlock} title="Code Block" />
 			<ToolbarButton icon={Minus} onclick={horizontalRule} title="Horizontal Rule" />
 		</div>
 
 		<!-- Lists -->
-		<div class="flex items-center gap-0.5 px-2 border-l border-slate-200 dark:border-slate-700 flex-shrink-0">
+		<div class="flex items-center gap-0.5 px-2 border-l border-slate-200 dark:border-slate-700 shrink-0">
 			<ToolbarButton icon={List} onclick={unorderedList} title="Unordered List" />
 			<ToolbarButton icon={ListOrdered} onclick={orderedList} title="Ordered List" />
 			<ToolbarButton icon={Check} onclick={taskList} title="Task List" />
 		</div>
 
 		<!-- Links/Media -->
-		<div class="flex items-center gap-0.5 pl-2 border-l border-slate-200 dark:border-slate-700 flex-shrink-0">
+		<div class="flex items-center gap-0.5 pl-2 border-l border-slate-200 dark:border-slate-700 shrink-0">
 			<ToolbarButton icon={Link} onclick={link} title="Link" />
 			<ToolbarButton icon={Image} onclick={image} title="Image" />
 		</div>
@@ -205,7 +205,7 @@
 	{#if hasOverflow || expanded}
 		<button
 			onclick={() => expanded = !expanded}
-			class="flex items-center justify-center w-8 h-8 rounded hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-400 transition-colors flex-shrink-0"
+			class="flex items-center justify-center w-8 h-8 rounded hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-400 transition-colors shrink-0"
 			title={expanded ? "Collapse toolbar" : "Expand toolbar"}
 		>
 			{#if expanded}
