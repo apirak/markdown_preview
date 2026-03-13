@@ -2,7 +2,7 @@
 	import { theme } from '../stores/theme';
 	import { panels, togglePanel } from '../stores/panels';
 	import type { Theme, PanelName } from '../types';
-	import { PanelTop, BookOpen, SquarePen, Eye } from 'lucide-svelte';
+	import { PanelTop, BookOpen, SquarePen, Eye, Moon, Sun } from 'lucide-svelte';
 	import HeaderButton from './buttons/HeaderButton.svelte';
 
 	function handlePanelToggle(name: PanelName) {
@@ -53,11 +53,10 @@
 	<div class="flex items-center gap-2">
 		<!-- Theme Toggle -->
 		<HeaderButton
+			icon={$theme === 'light' ? Moon : Sun}
 			onclick={handleThemeToggle}
 			title="Toggle theme"
-		>
-			{$theme === 'light' ? '🌙' : '☀️'}
-		</HeaderButton>
+		/>
 
 		<!-- Toolbar Toggle -->
 		<HeaderButton icon={PanelTop} title="Toggle toolbar">
