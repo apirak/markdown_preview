@@ -7,6 +7,7 @@
 	import PanelCloseButton from './buttons/PanelCloseButton.svelte';
 	import TemplateList from './TemplateList.svelte';
 	import Toolbar from './Toolbar.svelte';
+	import { slide } from 'svelte/transition';
 
 	const iconAttrs = { strokeWidth: 2, class: 'w-4 h-4' };
 
@@ -47,6 +48,7 @@
 
 {#if $panels.editor}
 	<section
+		transition:slide={{ duration: 300 }}
 		class="flex flex-col min-h-0 overflow-hidden border-r border-slate-200 dark:border-slate-700 bg-white dark:bg-gray-800 panel flex-1"
 	>
 		<!-- Panel Header -->
@@ -85,14 +87,17 @@
 			style="overscroll-behavior-y: none"
 		>
 			{#if $toolbar}
-				<Toolbar
-					editorText={editorText}
-					onTextChange={onTextChange}
-					textareaElement={textareaElement}
-				/>
+				<div transition:slide={{ duration: 200 }}>
+					<Toolbar
+						editorText={editorText}
+						onTextChange={onTextChange}
+						textareaElement={textareaElement}
+					/>
+				</div>
 			{/if}
 
 			<textarea
+				// svelte-ignore non_reactive_update
 				bind:this={textareaElement}
 				value={editorText}
 				oninput={(e) => onTextChange(e.currentTarget.value)}
