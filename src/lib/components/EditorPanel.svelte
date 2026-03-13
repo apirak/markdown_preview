@@ -1,10 +1,12 @@
 <script lang="ts">
 	import { panels, togglePanel } from '../stores/panels';
+	import { toolbar } from '../stores/toolbar';
 	import type { PanelName, Template } from '../types';
 	import { SquarePen, LayoutTemplate, Copy } from 'lucide-svelte';
 	import PanelActionButton from './buttons/PanelActionButton.svelte';
 	import PanelCloseButton from './buttons/PanelCloseButton.svelte';
 	import TemplateList from './TemplateList.svelte';
+	import Toolbar from './Toolbar.svelte';
 
 	const iconAttrs = { strokeWidth: 2, class: 'w-4 h-4' };
 
@@ -29,6 +31,9 @@
 		onCloseTemplateList,
 		copySuccess = false
 	}: Props = $props();
+
+	// DOM reference - not reactive state
+	let textareaElement: HTMLTextAreaElement = undefined!;
 
 	function handlePanelToggle(name: PanelName) {
 		panels.set(togglePanel(name, $panels));
@@ -79,7 +84,16 @@
 			class="flex-1 min-h-0 overflow-auto relative bg-white dark:bg-gray-800"
 			style="overscroll-behavior-y: none"
 		>
+			{#if $toolbar}
+				<Toolbar
+					editorText={editorText}
+					onTextChange={onTextChange}
+					textareaElement={textareaElement}
+				/>
+			{/if}
+
 			<textarea
+				bind:this={textareaElement}
 				value={editorText}
 				oninput={(e) => onTextChange(e.currentTarget.value)}
 				class="w-full h-full p-4 font-mono text-sm resize-none focus:outline-none bg-white dark:bg-gray-900 text-slate-800 dark:text-slate-200"

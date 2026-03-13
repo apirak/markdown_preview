@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { theme } from '../stores/theme';
 	import { panels, togglePanel } from '../stores/panels';
+	import { toolbar } from '../stores/toolbar';
 	import type { Theme, PanelName } from '../types';
 	import { PanelTop, BookOpen, SquarePen, Eye, Moon, Sun } from 'lucide-svelte';
 	import HeaderButton from './buttons/HeaderButton.svelte';
@@ -55,7 +56,12 @@
 		/>
 
 		<!-- Toolbar Toggle -->
-		<HeaderButton icon={PanelTop} title="Toggle toolbar">
+		<HeaderButton
+			icon={PanelTop}
+			variant={$toolbar ? 'active' : 'default'}
+			onclick={() => toolbar.update((v) => !v)}
+			title="Toggle toolbar"
+		>
 			Toolbar
 		</HeaderButton>
 
