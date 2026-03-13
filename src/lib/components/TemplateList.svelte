@@ -85,7 +85,7 @@
 
 <style>
 	.template-list {
-		padding: 5rem;
+		padding: 3rem;
 		position: absolute;
 		inset: 0;
 		z-index: 20;

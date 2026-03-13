@@ -48,7 +48,6 @@
 
 {#if $panels.editor}
 	<section
-		transition:slide={{ duration: 300 }}
 		class="flex flex-col min-h-0 overflow-hidden border-r border-slate-200 dark:border-slate-700 bg-white dark:bg-gray-800 panel flex-1"
 	>
 		<!-- Panel Header -->
