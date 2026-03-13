@@ -16,11 +16,13 @@
 	const baseClasses =
 		'flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded transition-all duration-200 cursor-pointer hover:cursor-pointer active:scale-95';
 
-	const colorClasses = success
+	const colorClasses = $derived(
+	success
 		? 'text-green-600 dark:text-green-400 bg-green-100 dark:bg-green-900/30'
 		: loading
 			? 'text-slate-400 dark:text-slate-500 bg-slate-100 dark:bg-slate-800 opacity-75'
-			: 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-slate-200 dark:hover:bg-slate-700 active:bg-slate-300 dark:active:bg-slate-600';
+			: 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-slate-200 dark:hover:bg-slate-700 active:bg-slate-300 dark:active:bg-slate-600'
+);
 
 	const disabledClasses = 'opacity-30 cursor-not-allowed active:scale-100';
 </script>
