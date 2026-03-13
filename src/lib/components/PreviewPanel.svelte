@@ -1,0 +1,143 @@
+<script lang="ts">
+	import { panels, togglePanel } from '../stores/panels';
+	import type { PanelName, DownloadFormat } from '../types';
+	import { Eye, FileCode, FileText, Image } from 'lucide-svelte';
+	import PanelActionButton from './buttons/PanelActionButton.svelte';
+	import PanelCloseButton from './buttons/PanelCloseButton.svelte';
+	import { onMount, tick } from 'svelte';
+	import mermaid from 'mermaid';
+
+	const iconAttrs = { strokeWidth: 2, class: 'w-4 h-4' };
+
+	// Initialize Mermaid
+	onMount(() => {
+		mermaid.initialize({
+			startOnLoad: false,
+			theme: 'default',
+			securityLevel: 'loose',
+			logLevel: 'error',
+		});
+	});
+
+	interface Props {
+		previewHtml: string;
+		onDownload: (format: DownloadFormat) => void;
+		downloadingFormat?: DownloadFormat | null;
+	}
+
+	let { previewHtml, onDownload, downloadingFormat = null }: Props = $props();
+
+	// Initialize Mermaid diagrams after preview updates
+	$effect(() => {
+		// Track previewHtml as dependency
+		previewHtml;
+
+		// Use IIFE for async code
+		(async () => {
+			// Wait for DOM to update
+			await tick();
+
+			// Additional delay to ensure DOM is fully rendered
+			await new Promise(resolve => setTimeout(resolve, 10));
+
+			try {
+				const previewElement = document.getElementById('preview');
+				if (previewElement) {
+					// Find unprocessed mermaid divs
+					const unprocessedDivs = Array.from(previewElement.querySelectorAll('.mermaid:not([data-processed])'));
+
+					if (unprocessedDivs.length > 0) {
+						console.log('Found unprocessed mermaid divs:', unprocessedDivs.length);
+
+						try {
+							// Use mermaid.run with the unprocessed elements
+							await mermaid.run({
+								nodes: unprocessedDivs as HTMLElement[]
+							});
+
+							console.log('Mermaid rendered successfully');
+						} catch (error) {
+							console.warn('Mermaid rendering error:', error);
+						}
+					}
+				}
+			} catch (error) {
+				console.warn('Mermaid effect error:', error);
+			}
+		})();
+	});
+
+	function handlePanelToggle(name: PanelName) {
+		panels.set(togglePanel(name, $panels));
+	}
+
+	function canClosePanel(name: PanelName): boolean {
+		const openCount = Object.values($panels).filter(Boolean).length;
+		return !$panels[name] || openCount > 1;
+	}
+</script>
+
+{#if $panels.preview}
+	<section
+		class="flex flex-col min-h-0 overflow-hidden bg-white dark:bg-gray-800 panel flex-1"
+	>
+		<!-- Panel Header -->
+		<div
+			class="bg-slate-50 dark:bg-slate-900/50 px-4 h-10 flex items-center justify-between border-b border-slate-200 dark:border-slate-700 text-sm font-semibold text-slate-600 dark:text-slate-300 shrink-0"
+		>
+			<div class="flex items-center gap-2">
+				<Eye {...iconAttrs} />
+				Live Preview
+			</div>
+			<div class="flex items-center gap-2">
+				<!-- HTML Button -->
+				<PanelActionButton
+					icon={FileCode}
+					onclick={() => onDownload('html')}
+					title="ดาวน์โหลดเป็น HTML"
+					loading={downloadingFormat === 'html'}
+				>
+					HTML
+				</PanelActionButton>
+
+				<!-- PDF Button -->
+				<PanelActionButton
+					icon={FileText}
+					onclick={() => onDownload('pdf')}
+					title="ดาวน์โหลดเป็น PDF"
+					loading={downloadingFormat === 'pdf'}
+				>
+					PDF
+				</PanelActionButton>
+
+				<!-- PNG Button -->
+				<PanelActionButton
+					icon={Image}
+					onclick={() => onDownload('png')}
+					title="ดาวน์โหลดเป็น PNG"
+					loading={downloadingFormat === 'png'}
+				>
+					PNG
+				</PanelActionButton>
+
+				<!-- Divider -->
+				<div class="w-px h-4 bg-slate-200 dark:bg-slate-700"></div>
+
+				<!-- Close Button -->
+				<PanelCloseButton
+					onclick={() => handlePanelToggle('preview')}
+					disabled={!canClosePanel('preview')}
+				/>
+			</div>
+		</div>
+
+		<!-- Panel Content -->
+		<div
+			id="preview"
+			class="markdown-preview flex-1 w-full p-8 overflow-y-auto"
+			style="overscroll-behavior-y: none"
+		>
+			{@html previewHtml}
+		</div>
+	</section>
+{/if}

@@ -6,7 +6,17 @@
       "Bash(pnpm exec:*)",
       "Bash(ls /Users/apirak/workspace/markdown_preview/src/**/*.js)",
       "Bash(pnpm typecheck:*)",
-      "Bash(pnpm typecheck:classic)"
+      "Bash(pnpm typecheck:classic)",
+      "Bash(pnpm init:*)",
+      "Bash(xargs file:*)",
+      "Bash(find /Users/apirak/workspace/markdown_preview/legacy/src -name *.svelte -o -name *.ts -o -name *.js)",
+      "Bash(git ls-tree:*)",
+      "Bash(find /Users/apirak/workspace/markdown_preview/legacy -type f -name *.html -o -name *.ts -o -name *.js)",
+      "Bash(git checkout:*)",
+      "Bash(git push:*)"
+    ],
+    "additionalDirectories": [
+      "/Users/apirak/workspace/markdown_preview/.vscode"
     ]
   }
 }

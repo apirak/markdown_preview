@@ -1,0 +1,122 @@
+@import "tailwindcss";
+@import "katex/dist/katex.min.css";
+
+/* Enable dark mode with class strategy */
+@variant dark (&:where(.dark, .dark *));
+
+/* GitHub-like markdown preview styles */
+@layer components {
+	.markdown-preview {
+		@apply font-sans text-[14px] leading-normal text-slate-800 dark:text-slate-200;
+		font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans", Helvetica, Arial, sans-serif,
+			"Apple Color Emoji", "Segoe UI Emoji";
+	}
+
+	/* Headings - GitHub style */
+	.markdown-preview h1 {
+		@apply text-2xl font-semibold dark:border-slate-700 pb-1 mb-4;
+	}
+
+	.markdown-preview h2 {
+		@apply text-xl font-semibold dark:border-slate-700 pb-1 mb-3 mt-5;
+	}
+
+	.markdown-preview h3 {
+		@apply text-lg font-semibold mb-2 mt-4;
+	}
+
+	.markdown-preview h4 {
+		@apply text-base font-semibold mb-2 mt-4;
+	}
+
+	.markdown-preview h5,
+	.markdown-preview h6 {
+		@apply text-sm font-semibold mb-2 mt-4;
+	}
+
+	/* Paragraphs */
+	.markdown-preview p {
+		@apply mb-4 leading-[1.6];
+	}
+
+	/* Links */
+	.markdown-preview a {
+		@apply text-blue-600 dark:text-blue-400 hover:underline;
+	}
+
+	/* Lists */
+	.markdown-preview ul,
+	.markdown-preview ol {
+		@apply pl-6 mb-4;
+	}
+
+	.markdown-preview li {
+		@apply mb-1;
+	}
+
+	.markdown-preview ul {
+		@apply list-disc;
+	}
+
+	.markdown-preview ol {
+		@apply list-decimal;
+	}
+
+	/* Code */
+	.markdown-preview code {
+		@apply bg-slate-100 dark:bg-slate-800 text-pink-600 dark:text-pink-400 px-1.5 py-0.5 rounded text-sm font-mono;
+	}
+
+	.markdown-preview pre {
+		@apply bg-slate-100 dark:bg-slate-800 p-4 rounded-lg mb-4 overflow-x-auto;
+	}
+
+	.markdown-preview pre code {
+		@apply bg-transparent p-0 text-slate-800 dark:text-slate-200;
+	}
+
+	/* Blockquotes */
+	.markdown-preview blockquote {
+		@apply border-l-4 border-slate-300 dark:border-slate-600 pl-4 italic text-slate-600 dark:text-slate-400 mb-4;
+	}
+
+	/* Tables */
+	.markdown-preview table {
+		@apply w-full border-collapse mb-4 border border-slate-200 dark:border-slate-700;
+	}
+
+	.markdown-preview th,
+	.markdown-preview td {
+		@apply border border-slate-200 dark:border-slate-700 px-3 py-2 text-left;
+	}
+
+	.markdown-preview th {
+		@apply bg-slate-50 dark:bg-slate-800 font-semibold;
+	}
+
+	/* Horizontal rule */
+	.markdown-preview hr {
+		@apply border-slate-200 dark:border-slate-700 my-6;
+	}
+
+	/* Images */
+	.markdown-preview img {
+		@apply max-w-full h-auto rounded-lg my-4;
+	}
+
+	/* Strong and emphasis */
+	.markdown-preview strong {
+		@apply font-semibold;
+	}
+
+	.markdown-preview em {
+		@apply italic;
+	}
+}
+
+/* Custom dark mode overrides */
+@layer base {
+	html.dark {
+		color-scheme: dark;
+	}
+}
