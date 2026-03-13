@@ -1,2 +1,29 @@
+# Dependencies
 node_modules
+
+# Build outputs
 dist
+src-tauri/target
+
+# IDE / Editor
+.vscode/*
+!.vscode/extensions.json
+.idea
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Environment
+.env
+.env.*
+!.env.example
+
+# Vite
+*.local
+
+# TypeScript
+*.tsbuildinfo
