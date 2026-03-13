@@ -13,7 +13,9 @@
 		Link,
 		Image,
 		Heading,
-		Table
+		Table,
+		ChevronsUpDown,
+		ChevronsDownUp
 	} from 'lucide-svelte';
 	import ToolbarButton from './ToolbarButton.svelte';
 	import type { TextRange } from '../utils/markdown-format';
@@ -35,6 +37,32 @@
 	}
 
 	let { editorText, onTextChange, textareaElement }: Props = $props();
+
+	let expanded = $state(false);
+	let hasOverflow = $state(false);
+	let contentDiv: HTMLDivElement;
+	let containerDiv: HTMLDivElement;
+
+	// Detect overflow using ResizeObserver
+	function checkOverflow() {
+		if (!contentDiv || !containerDiv) return;
+		// Check if content width exceeds container width
+		hasOverflow = contentDiv.scrollWidth > containerDiv.clientWidth;
+	}
+
+	// Use ResizeObserver to watch for size changes
+	$effect(() => {
+		if (!contentDiv || !containerDiv) return;
+
+		const observer = new ResizeObserver(() => {
+			checkOverflow();
+		});
+
+		observer.observe(contentDiv);
+		observer.observe(containerDiv);
+
+		return () => observer.disconnect();
+	});
 
 	function getSelectionRange(): TextRange {
 		if (!textareaElement) return { start: 0, end: 0 };
@@ -134,39 +162,61 @@
 </script>
 
 <div
-	class="flex flex-wrap items-center gap-1 px-2 py-1.5 border-b border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900/50"
+	bind:this={containerDiv}
+	class="flex items-center gap-1 px-2 py-1.5 border-b border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900/50"
 >
-	<!-- Text Formatting -->
-	<div class="flex items-center gap-0.5 pr-2 border-r border-slate-200 dark:border-slate-700">
-		<ToolbarButton icon={Bold} onclick={bold} title="Bold (Ctrl+B)" />
-		<ToolbarButton icon={Italic} onclick={italic} title="Italic (Ctrl+I)" />
-		<ToolbarButton icon={Strikethrough} onclick={strikethrough} title="Strikethrough" />
-		<ToolbarButton icon={Code} onclick={code} title="Inline Code" />
+	<div bind:this={contentDiv} class="flex {expanded ? 'flex-wrap' : 'flex-nowrap overflow-x-auto'} items-center gap-1 flex-1">
+		<!-- Text Formatting -->
+		<div class="flex items-center gap-0.5 pr-2 border-r border-slate-200 dark:border-slate-700 flex-shrink-0">
+			<ToolbarButton icon={Bold} onclick={bold} title="Bold (Ctrl+B)" />
+			<ToolbarButton icon={Italic} onclick={italic} title="Italic (Ctrl+I)" />
+			<ToolbarButton icon={Strikethrough} onclick={strikethrough} title="Strikethrough" />
+			<ToolbarButton icon={Code} onclick={code} title="Inline Code" />
+		</div>
+
+		<!-- Structure -->
+		<div class="flex items-center gap-0.5 px-2 flex-shrink-0">
+			<ToolbarButton icon={Heading} onclick={heading} title="Heading" />
+			<ToolbarButton icon={Table} onclick={table} title="Table" />
+		</div>
+
+		<!-- Blocks -->
+		<div class="flex items-center gap-0.5 px-2 border-l border-slate-200 dark:border-slate-700 flex-shrink-0">
+			<ToolbarButton icon={Quote} onclick={quote} title="Blockquote" />
+			<ToolbarButton icon={FileCode} onclick={codeBlock} title="Code Block" />
+			<ToolbarButton icon={Minus} onclick={horizontalRule} title="Horizontal Rule" />
+		</div>
+
+		<!-- Lists -->
+		<div class="flex items-center gap-0.5 px-2 border-l border-slate-200 dark:border-slate-700 flex-shrink-0">
+			<ToolbarButton icon={List} onclick={unorderedList} title="Unordered List" />
+			<ToolbarButton icon={ListOrdered} onclick={orderedList} title="Ordered List" />
+			<ToolbarButton icon={Check} onclick={taskList} title="Task List" />
+		</div>
+
+		<!-- Links/Media -->
+		<div class="flex items-center gap-0.5 pl-2 border-l border-slate-200 dark:border-slate-700 flex-shrink-0">
+			<ToolbarButton icon={Link} onclick={link} title="Link" />
+			<ToolbarButton icon={Image} onclick={image} title="Image" />
+		</div>
 	</div>
 
-	<!-- Structure -->
-	<div class="flex items-center gap-0.5 px-2">
-		<ToolbarButton icon={Heading} onclick={heading} title="Heading" />
-		<ToolbarButton icon={Table} onclick={table} title="Table" />
-	</div>
-
-	<!-- Blocks -->
-	<div class="flex items-center gap-0.5 px-2 border-l border-slate-200 dark:border-slate-700">
-		<ToolbarButton icon={Quote} onclick={quote} title="Blockquote" />
-		<ToolbarButton icon={FileCode} onclick={codeBlock} title="Code Block" />
-		<ToolbarButton icon={Minus} onclick={horizontalRule} title="Horizontal Rule" />
-	</div>
-
-	<!-- Lists -->
-	<div class="flex items-center gap-0.5 px-2 border-l border-slate-200 dark:border-slate-700">
-		<ToolbarButton icon={List} onclick={unorderedList} title="Unordered List" />
-		<ToolbarButton icon={ListOrdered} onclick={orderedList} title="Ordered List" />
-		<ToolbarButton icon={Check} onclick={taskList} title="Task List" />
-	</div>
-
-	<!-- Links/Media -->
-	<div class="flex items-center gap-0.5 pl-2 border-l border-slate-200 dark:border-slate-700">
-		<ToolbarButton icon={Link} onclick={link} title="Link" />
-		<ToolbarButton icon={Image} onclick={image} title="Image" />
-	</div>
+	<!-- Expand/Collapse Toggle -->
+	{#if hasOverflow || expanded}
+		<button
+			onclick={() => expanded = !expanded}
+			class="flex items-center justify-center w-8 h-8 rounded hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-400 transition-colors flex-shrink-0"
+			title={expanded ? "Collapse toolbar" : "Expand toolbar"}
+		>
+			{#if expanded}
+				<span class="text-sm font-bold leading-none">
+					<ChevronsDownUp class="w-3 h-3" />
+				</span>
+			{:else}
+				<span class="text-xs font-bold leading-none">
+					<ChevronsUpDown class="w-3 h-3" />
+				</span>
+			{/if}
+		</button>
+	{/if}
 </div>
