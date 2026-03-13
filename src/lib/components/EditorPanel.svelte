@@ -16,6 +16,7 @@
 		showTemplateList: boolean;
 		onTemplateSelect: (template: Template) => void;
 		onCloseTemplateList: () => void;
+		copySuccess?: boolean;
 	}
 
 	let {
@@ -25,7 +26,8 @@
 		onTemplate,
 		showTemplateList,
 		onTemplateSelect,
-		onCloseTemplateList
+		onCloseTemplateList,
+		copySuccess = false
 	}: Props = $props();
 
 	function handlePanelToggle(name: PanelName) {
@@ -57,8 +59,8 @@
 				</PanelActionButton>
 
 				<!-- Copy Button -->
-				<PanelActionButton icon={Copy} onclick={onCopy}>
-					Copy
+				<PanelActionButton icon={Copy} onclick={onCopy} success={copySuccess}>
+					{copySuccess ? 'Copied!' : 'Copy'}
 				</PanelActionButton>
 
 				<!-- Divider -->

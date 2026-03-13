@@ -15,6 +15,12 @@
 	// Template list state
 	let showTemplateList = $state(false);
 
+	// Copy success state
+	let copySuccess = $state(false);
+
+	// Download loading state
+	let downloadingFormat = $state<DownloadFormat | null>(null);
+
 	// Derived state for preview HTML
 	const previewHtml = $derived(parseMarkdown(editorText));
 
@@ -37,12 +43,20 @@
 	}
 
 	// Callback functions for panels
-	function handleCopy() {
-		navigator.clipboard.writeText(editorText);
-		// TODO: Show toast notification
+	async function handleCopy() {
+		try {
+			await navigator.clipboard.writeText(editorText);
+			copySuccess = true;
+			setTimeout(() => {
+				copySuccess = false;
+			}, 2000);
+		} catch (error) {
+			console.error('Failed to copy:', error);
+		}
 	}
 
 	async function handleDownload(format: DownloadFormat) {
+		downloadingFormat = format;
 		try {
 			const title = editorText.split('\n')[0].replace(/^#+\s*/, '').trim() || 'document';
 
@@ -59,7 +73,8 @@
 			}
 		} catch (error) {
 			console.error('Export failed:', error);
-			// TODO: Show error notification
+		} finally {
+			downloadingFormat = null;
 		}
 	}
 
@@ -96,12 +111,14 @@
 			showTemplateList={showTemplateList}
 			onTemplateSelect={handleTemplateSelect}
 			onCloseTemplateList={closeTemplateList}
+			{copySuccess}
 		/>
 
 		<!-- Preview Panel -->
 		<PreviewPanel
 			previewHtml={previewHtml}
 			onDownload={handleDownload}
+			downloadingFormat={downloadingFormat}
 		/>
 	</main>
 </div>

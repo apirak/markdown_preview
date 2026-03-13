@@ -22,9 +22,10 @@
 	interface Props {
 		previewHtml: string;
 		onDownload: (format: DownloadFormat) => void;
+		downloadingFormat?: DownloadFormat | null;
 	}
 
-	let { previewHtml, onDownload }: Props = $props();
+	let { previewHtml, onDownload, downloadingFormat = null }: Props = $props();
 
 	// Initialize Mermaid diagrams after preview updates
 	$effect(() => {
@@ -94,6 +95,7 @@
 					icon={FileCode}
 					onclick={() => onDownload('html')}
 					title="ดาวน์โหลดเป็น HTML"
+					loading={downloadingFormat === 'html'}
 				>
 					HTML
 				</PanelActionButton>
@@ -103,6 +105,7 @@
 					icon={FileText}
 					onclick={() => onDownload('pdf')}
 					title="ดาวน์โหลดเป็น PDF"
+					loading={downloadingFormat === 'pdf'}
 				>
 					PDF
 				</PanelActionButton>
@@ -112,6 +115,7 @@
 					icon={Image}
 					onclick={() => onDownload('png')}
 					title="ดาวน์โหลดเป็น PNG"
+					loading={downloadingFormat === 'png'}
 				>
 					PNG
 				</PanelActionButton>
