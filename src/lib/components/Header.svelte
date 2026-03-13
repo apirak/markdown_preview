@@ -4,6 +4,7 @@
 	import type { Theme, PanelName } from '../types';
 	import { PanelTop, BookOpen, SquarePen, Eye, Moon, Sun } from 'lucide-svelte';
 	import HeaderButton from './buttons/HeaderButton.svelte';
+	import SiteLink from './SiteLink.svelte';
 
 	function handlePanelToggle(name: PanelName) {
 		panels.set(togglePanel(name, $panels));
@@ -38,14 +39,9 @@
 		<h1 class="text-lg font-bold text-slate-900 dark:text-slate-100 tracking-tight">
 			Markdown Preview
 			<span class="text-slate-400 dark:text-slate-500 font-normal ml-1">| </span>
-			<a
-				href="https://apirak.com"
-				target="_blank"
-				rel="noopener noreferrer"
-				class="text-slate-400 dark:text-slate-500 font-normal hover:text-slate-600 dark:hover:text-slate-300"
-			>
+			<SiteLink className="text-slate-400 dark:text-slate-500 font-normal hover:text-slate-600 dark:hover:text-slate-300">
 				apirak.com
-			</a>
+			</SiteLink>
 		</h1>
 	</div>
 
