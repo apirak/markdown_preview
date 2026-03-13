@@ -34,6 +34,7 @@
 	}: Props = $props();
 
 	// DOM reference - not reactive state
+	// svelte-ignore non_reactive_update
 	let textareaElement: HTMLTextAreaElement = undefined!;
 
 	function handlePanelToggle(name: PanelName) {

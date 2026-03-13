@@ -22,20 +22,7 @@
 	<!-- Left: Logo + Title -->
 	<div class="flex items-center gap-3">
 		<div class="p-1 bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 rounded-lg">
-			<svg
-				class="w-5 h-5"
-				viewBox="0 0 24 24"
-				fill="none"
-				stroke="currentColor"
-				stroke-width="2"
-				stroke-linecap="round"
-				stroke-linejoin="round"
-			>
-				<path
-					d="M15.5 3H5a2 2 0 0 0-2 2v14c0 1.1.9 2 2 2h14a2 2 0 0 0 2-2V8.5L15.5 3Z"
-				></path>
-				<path d="M14 3v4a2 2 0 0 0 2 2h4"></path>
-			</svg>
+			<img src="/favicon.svg" alt="Logo" class="w-5 h-5" />
 		</div>
 		<h1 class="text-lg font-bold text-slate-900 dark:text-slate-100 tracking-tight">
 			Markdown Preview
