@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { parseMarkdown } from './lib/utils/markdown';
+	import { exportAsHTML, exportAsPDF, exportAsPNG } from './lib/utils/export';
 	import { theme } from './lib/stores/theme';
 	import Header from './lib/components/Header.svelte';
 	import HelpPanel from './lib/components/HelpPanel.svelte';
@@ -41,9 +42,25 @@
 		// TODO: Show toast notification
 	}
 
-	function handleDownload(format: DownloadFormat) {
-		// TODO: Implement download
-		console.log('Download', format);
+	async function handleDownload(format: DownloadFormat) {
+		try {
+			const title = editorText.split('\n')[0].replace(/^#+\s*/, '').trim() || 'document';
+
+			switch (format) {
+				case 'html':
+					await exportAsHTML(previewHtml, title);
+					break;
+				case 'pdf':
+					await exportAsPDF('preview', `${title}.pdf`);
+					break;
+				case 'png':
+					await exportAsPNG('preview', `${title}.png`);
+					break;
+			}
+		} catch (error) {
+			console.error('Export failed:', error);
+			// TODO: Show error notification
+		}
 	}
 
 	function handleTemplate() {
