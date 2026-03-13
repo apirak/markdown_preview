@@ -14,8 +14,7 @@
 </script>
 
 <button
-	class="{baseClasses} {colorClasses}"
-	class:disabled={disabled}
+	class="{baseClasses} {colorClasses} {disabled ? disabledClasses : ''}"
 	onclick={onclick}
 	{disabled}
 	title="Close panel"
