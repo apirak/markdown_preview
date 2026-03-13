@@ -7,6 +7,15 @@
 	import HeaderButton from './buttons/HeaderButton.svelte';
 	import SiteLink from './SiteLink.svelte';
 
+	const isTauri = typeof window !== 'undefined' && '__TAURI_INTERNALS__' in window;
+
+	let startDragging: (() => Promise<void>) | null = null;
+	if (isTauri) {
+		import('@tauri-apps/api/window').then((mod) => {
+			startDragging = () => mod.getCurrentWindow().startDragging();
+		});
+	}
+
 	function handlePanelToggle(name: PanelName) {
 		panels.set(togglePanel(name, $panels));
 	}
@@ -14,12 +23,21 @@
 	function handleThemeToggle() {
 		theme.update((t: Theme) => (t === 'light' ? 'dark' : 'light'));
 	}
+
+	function handleDragMouseDown(e: MouseEvent) {
+		if (e.button === 0 && startDragging) {
+			e.preventDefault();
+			startDragging();
+		}
+	}
 </script>
 
 <header
-	class="bg-white dark:bg-gray-800 border-b border-slate-200 dark:border-slate-700 px-4 py-4 flex justify-between items-center shadow-sm z-10 shrink-0"
+	class="bg-white dark:bg-gray-800 border-b border-slate-200 dark:border-slate-700 px-4 py-2 flex justify-between items-center z-10 shrink-0"
+	class:pl-20={isTauri}
 >
-	<!-- Left: Logo + Title -->
+	<!-- Left: Logo + Title (hidden in Tauri app) -->
+	{#if !isTauri}
 	<div class="flex items-center gap-3">
 		<div class="p-1 bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 rounded-lg">
 			<img src="/favicon.svg" alt="Logo" class="w-5 h-5" />
@@ -32,9 +50,16 @@
 			</SiteLink>
 		</h1>
 	</div>
+	{/if}
+
+	<!-- Drag region spacer (fills empty space, allows window dragging in Tauri) -->
+	{#if isTauri}
+	<!-- svelte-ignore a11y_no_static_element_interactions -->
+	<div class="flex-1 h-full min-h-8 cursor-grab" onmousedown={handleDragMouseDown}></div>
+	{/if}
 
 	<!-- Right: Actions -->
-	<div class="flex items-center gap-2">
+	<div class="flex items-center gap-2 ml-auto">
 		<!-- Theme Toggle -->
 		<HeaderButton
 			icon={$theme === 'light' ? Moon : Sun}
