@@ -98,7 +98,7 @@
 	<Header />
 
 	<!-- Main Content -->
-	<main class="flex-1 flex flex-row overflow-hidden">
+	<main class="flex-1 flex flex-col md:flex-row overflow-hidden">
 		<!-- Help Panel -->
 		<HelpPanel />
 
